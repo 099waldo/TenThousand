@@ -1,0 +1,88 @@
+<html>
+    <head>
+        <title>Game Client</title>
+    </head>
+    <body>
+        <p id="par">?</p>
+        <script>
+
+            var par = document.getElementById("par");
+
+            window.onload = function(){
+                setInterval(function() {
+                    update();
+	            } ,5000);
+             }
+            var url = "http://192.168.0.112:8080";
+
+            var xhr = httpRequest('GET', url);
+            setTimeout(function(){ 
+                //document.write(xhr.responseText);
+            }, 500);
+
+            function update(){
+                //Update everything in the game.
+                xhr = httpRequest('GET', url);
+                setTimeout(function(){ 
+                    par.innerHTML = xhr.responseText;
+                }, 500);
+            }
+
+            function httpGet(theUrl) // This would probably work but use httpRequest instead.
+                {
+                    var xhttp = new XMLHttpRequest();
+                    xhttp.onreadystatechange = function() {
+                        if (this.readyState == 4 && this.status == 200) {
+                            return xhttp.responseText;
+                    }
+                };
+                    xhttp.open("GET", theUrl, true);
+                    xhttp.send();
+        }
+
+
+        function httpRequest(method, myurl) {
+            var xhr = new XMLHttpRequest();
+            //xhr.withCredentials = true;
+            if ("withCredentials" in xhr) {
+                 // Check if the XMLHttpRequest object has a "withCredentials" property.
+                 // "withCredentials" only exists on XMLHTTPRequest2 objects.
+                 xhr.onreadystatechange = function() {
+                        if (this.readyState == 4 && this.status == 200) {
+                            return xhr;
+                    }
+                };
+                xhr.open(method, myurl, true);
+                xhr.send();
+                //console.log("Chrome");
+
+            } else if (typeof XDomainRequest != "undefined") {
+
+                // Otherwise, check if XDomainRequest.
+                // XDomainRequest only exists in IE, and is IE's way of making CORS requests.
+                xhr = new XDomainRequest();
+                xhr.onreadystatechange = function() {
+                        if (this.readyState == 4 && this.status == 200) {
+                            return xhr;
+                    }
+                };
+                xhr.open(method, myurl);
+                xhr.send();
+            } else {
+
+                // Otherwise, CORS is not supported by the browser.
+                xhr = null;
+
+            }
+            
+            /*xhr.onreadystatechange = function() {
+                        if (this.readyState == 4 && this.status == 200) {
+                            return xhr;
+                    }
+                    return xhr;
+                };*/
+            return xhr;
+        }
+        </script>
+    </body>
+</html>
