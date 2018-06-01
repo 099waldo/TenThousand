@@ -2,13 +2,14 @@
     <head>
         <title id="title">Ten Thousand</title>
         <link rel="stylesheet" type="text/css"href="tenthousand.css">
+        <meta name="viewport" content="width=device-width, initial-scale=1" /> 
     </head>
     <body style="text-align: center;">
         <p id="playername" style="text-align: right"></p>
         <div id="gamediv">
             Your name: <input id="name" type="text" style="text-align: center;" onchange="changeName()"/><br><br>
-            <button onclick="RollAll()" id="rollallbutton" class="dice">Roll All the Dice</button>
-            <button onclick="roll()" id="rollbutton" class="dice">Roll The Dice</button><br><br>
+            <button onclick="RollAll()" id="rollallbutton" class="rollbutton">Roll All the Dice</button>
+            <button onclick="roll()" id="rollbutton" class="rollbutton">Roll The Dice</button><br><br>
             <button onclick="dice1()" id = "dice1" class="dice">0</button>
             <button onclick="dice2()" id = "dice2" class="dice">0</button>
             <button onclick="dice3()" id = "dice3" class="dice">0</button>
@@ -18,7 +19,7 @@
             <button onclick="bigDice1()" id="bigdice1" class="dice">0</button>
             <button onclick="bigDice2()" id="bigdice2" class="dice">0</button><br><br>
             <p id = "scoreText"></p>
-            <button onclick="takeit()" id="takeitbutton">Take it</button>
+            <button onclick="takeit()" id="takeitbutton"  class="rollbutton">Take it</button>
             <p id ="infopar"></p>
             <p id="turnnotification" style="color: red"></p>
             <p id="scorepar"></p>
