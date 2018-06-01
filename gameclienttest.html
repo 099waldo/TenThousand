@@ -1,33 +1,22 @@
 <html>
     <head>
         <title id="title">Ten Thousand</title>
+        <link rel="stylesheet" type="text/css"href="tenthousand.css">
     </head>
-    <style>
-        #chat {
-            border: 2px dashed black;
-            border-radius: 5px;
-            width: 500px;
-            height: 250px;
-            text-align: center;
-            margin-left: auto;
-            margin-right: auto;
-            overflow: auto;
-        }
-    </style>
     <body style="text-align: center;">
         <p id="playername" style="text-align: right"></p>
         <div id="gamediv">
             Your name: <input id="name" type="text" style="text-align: center;" onchange="changeName()"/><br><br>
-            <button onclick="RollAll()" id="rollallbutton">Roll All the Dice</button>
-            <button onclick="roll()" id="rollbutton">Roll The Dice</button><br><br>
-            <button onclick="dice1()" id = "dice1">0</button>
-            <button onclick="dice2()" id = "dice2">0</button>
-            <button onclick="dice3()" id = "dice3">0</button>
-            <button onclick="dice4()" id = "dice4">0</button>
-            <button onclick="dice5()" id = "dice5">0</button>
-            <button onclick="dice6()" id = "dice6">0</button><br>
-            <button onclick="bigDice1()" id="bigdice1">0</button>
-            <button onclick="bigDice2()" id="bigdice2">0</button><br><br>
+            <button onclick="RollAll()" id="rollallbutton" class="dice">Roll All the Dice</button>
+            <button onclick="roll()" id="rollbutton" class="dice">Roll The Dice</button><br><br>
+            <button onclick="dice1()" id = "dice1" class="dice">0</button>
+            <button onclick="dice2()" id = "dice2" class="dice">0</button>
+            <button onclick="dice3()" id = "dice3" class="dice">0</button>
+            <button onclick="dice4()" id = "dice4" class="dice">0</button>
+            <button onclick="dice5()" id = "dice5" class="dice">0</button>
+            <button onclick="dice6()" id = "dice6" class="dice">0</button><br>
+            <button onclick="bigDice1()" id="bigdice1" class="dice">0</button>
+            <button onclick="bigDice2()" id="bigdice2" class="dice">0</button><br><br>
             <p id = "scoreText"></p>
             <button onclick="takeit()" id="takeitbutton">Take it</button>
             <p id ="infopar"></p>
