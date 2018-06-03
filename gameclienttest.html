@@ -264,7 +264,7 @@
                     setup();
                 }
                 else{
-                    xhr = httpRequest('GET', url + "/update");
+                    xhr = httpRequest('GET', url + "/?update=" + playernum);
                     setTimeout(function(){ 
                         infopar.innerHTML = xhr.responseText;
                         var results = JSON.parse(xhr.responseText);

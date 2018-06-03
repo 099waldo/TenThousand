@@ -2,31 +2,9 @@ var http = require('http');
 var url = require('url');
 var requests = 0;
 
-var turn = 0;  
-var score = 0;
-
-var dices = [];
-dices.push(0); // Dice 1
-dices.push(0); // Dice 2
-dices.push(0); // Dice 3
-dices.push(0); // Dice 4
-dices.push(0); // Dice 5
-dices.push(0); // Dice 6
-dices.push(0); // Big Dice 1
-dices.push(0); // Big Dice 2
-
-var bigdicenumber1 = 0;
-var bigdicebasenumber1 = 0;
-
-var bigdicenumber2 = 0;
-var bigdicebasenumber2 = 0;
-
-var showtakebutton = false;
-var showrollallbutton = false;
-var allowroll = true;
+var rooms = [{name:"Lobby",turn:0,score:0,dices:[0,0,0,0,0,0,0,0],bigdicenumber1:0,bigdicebasenumber1:0,bigdicenumber2:0,bigdicebasenumber2:0,showtakebutton:false,showrollallbutton:false,allowroll:true,chats:[],startscore:1000}];
 
 var players = [];
-
 
 			/* Button Codes:
                 -1: Roll All Button
@@ -43,11 +21,6 @@ var players = [];
             */
 
 
-var chats = [];
-
-var startscore = 0;
-//var startscore = 1000; // For debuging
-
 http.createServer(function (req, res) {
 	//res.setHeader('Access-Control-Allow-Origin', 'http://waldoweb.net'); // Don't delete this line.
 	res.setHeader('Access-Control-Allow-Origin', null); // For local testing.
@@ -56,12 +29,13 @@ http.createServer(function (req, res) {
 	
 	var q = url.parse(req.url, true);
 
-	if(q.path == "/update"){ // Then it is a game update request.
+	if(q.query.update != null){ // Then it is a game update request.  This function will require the number of the player that is requesting the data.
 		//console.log("Update Request  " + requests);
-		var gamevalues = '{"d1":"' + dices[0] + '", "d2":"' + dices[1] + '", "d3":"'+dices[2]
-         + '", "d4":"'+dices[3] + '", "d5":"' + dices[4] + '", "d6":"' + dices[5] + '", "turn":"'
-		  + turn + '", "bd1":"' + dices[6] + '", "bd2":"' + dices[7] + '", "score":"' + score + '", "takebutton":"'
-		   + showtakebutton + '", "rollallbutton":"' + showrollallbutton + '"}';
+		var playerroom = q.query.update;
+		var gamevalues = '{"d1":"' + rooms[playerroom].dices[0] + '", "d2":"' + rooms[playerroom].dices[1] + '", "d3":"'+rooms[playerroom].dices[2]
+         + '", "d4":"'+rooms[playerroom].dices[3] + '", "d5":"' + rooms[playerroom].dices[4] + '", "d6":"' + rooms[playerroom].dices[5] + '", "turn":"'
+		  + rooms[playerroom].turn + '", "bd1":"' + rooms[playerroom].dices[6] + '", "bd2":"' + rooms[playerroom].dices[7] + '", "score":"' + rooms[playerroom].score + '", "takebutton":"'
+		   + rooms[playerroom].showtakebutton + '", "rollallbutton":"' + rooms[playerroom].showrollallbutton + '"}';
 		// Servers must return text in JSON format. eg. '{ "name":"John", "age":31, "city":"New York" }'
 		res.end(gamevalues);
 	}
@@ -70,12 +44,12 @@ http.createServer(function (req, res) {
 		var p = 0;
 		var n = 0;
 		if(players.length == 0){
-			players.push({name:"Player " + (players.length), num:players.length, ping:null, score:startscore, chat:chats.length});
+			players.push({name:"Player " + (players.length), num:players.length, ping:null, score:rooms[0].startscore, chat:rooms[0].chats.length, room:0});
 		}
 		else {
 			for(var i=0;i<players.length+1;i++){
 				if(players[i] == undefined){
-					players[i] = {name:"Player " + i.toString(), num:i, ping:null, score:startscore, chat:chats.length}
+					players[i] = {name:"Player " + i.toString(), num:i, ping:null, score:rooms[0].startscore, chat:rooms[0].chats.length, room:0}
 					p = "Player " + i.toString();
 					n = i;
 					i = players.length+1;
@@ -91,15 +65,15 @@ http.createServer(function (req, res) {
 		}, 10000);
 		console.log("Player " + players[n].name  + " has joined");
 		setTimeout(function(){ 
-			chats.push(players[n].name + " has joined the game.");
+			rooms[0].chats.push(players[n].name + " has joined the game.");
 		}, 1000);
 		res.end('{"player":"' + (n).toString() + '"}');
 	}
 	else if(q.query.chatupdate != null){ // Give him the latest chat that he hasen't got. 
 		if(players[q.query.chatupdate] != null){
-			if(chats.length != 0 && chats[players[q.query.chatupdate].chat] != null){
+			if(rooms[players[q.query.chatupdate].room].chats.length != 0 && rooms[players[q.query.chatupdate].room].chats[players[q.query.chatupdate].chat] != null){
 				players[q.query.chatupdate].chat += 1;
-				res.end(chats[players[q.query.chatupdate].chat-1]);
+				res.end(rooms[players[q.query.chatupdate].room].chats[players[q.query.chatupdate].chat-1]);
 			}
 			else{
 				res.end('');
@@ -109,36 +83,39 @@ http.createServer(function (req, res) {
 	else if(q.query.sendchat == "/restart"){
 		chats.push('The Game has been restarted.');
 		console.log("Game Reset");
+		var roomreset = 0;
 		for(var i=0;i<6;i++){
-			dices[i] = 0;
+			rooms[roomreset].dices[i] = 0;
 		}
 		for(var i=0;i<players.length;i++){
 			if(players[i] != null){
-				players[i].score = 0;
+				if(players[i].room == roomreset){
+					players[i].score = 0;
+				}
 			}
 		}
-		score = 0;
-		turn = 0;
-		showtakebutton = false;
-		showrollallbutton = false;
-		allowroll = true;
+		rooms[roomreset].score = 0;
+		rooms[roomreset].turn = 0;
+		rooms[roomreset].showtakebutton = false;
+		rooms[roomreset].showrollallbutton = false;
+		rooms[roomreset].allowroll = true;
 		res.end('Game Reset');
 	}
 	else if(q.query.sendchat != null){ // It is a send chat request
 		if(q.query.sendchat != ""){
-			chats.push(players[q.query.player].name + ": " + q.query.sendchat);
-			console.log(chats[chats.length-1]);
+			rooms[0].chats.push(players[q.query.player].name + ": " + q.query.sendchat);
+			console.log(rooms[0].chats[chats.length-1]);
 		}
 		res.end('Chat send');
 	}
 	else if(q.query.setname != null){ // It is a set name request.
-		chats.push(players[q.query.player].name + " is now known as " + q.query.setname);
+		rooms[players[q.query.player].room].chats.push(players[q.query.player].name + " is now known as " + q.query.setname);
 		players[q.query.player].name = q.query.setname;
 		res.end("name changed");
 	}
 	else if(q.query.player != null){ // Then it is a attempt to play.
 		console.log("Play Request  " + requests);
-		if(q.query.player == turn){
+		if(q.query.player == rooms[players[q.query.player].room].turn){
 			play(q.query.player, q.query.button);
 		}
 		res.end("hello??");
@@ -149,14 +126,14 @@ http.createServer(function (req, res) {
             return;
         }
         clearTimeout(players[q.query.ping].ping);
-        if(allDicesDisabled()){
+        if(allDicesDisabled(players[q.query.ping].room)){
             for(var i=0;i<6;i++){
-                dices[i] = 0;
+                rooms[players[q.query.ping].room].dices[i] = 0;
             }
         }
 		players[q.query.ping].ping = null;
 		players[q.query.ping].ping = setTimeout(function(){
-			chats.push(players[q.query.ping].name + " left the game.");
+			room[players[q.query.ping].room].chats.push(players[q.query.ping].name + " left the game.");
 			delete players[q.query.ping];
 			console.log("Kicked player " + q.query.ping);
 			console.log(players);
@@ -165,12 +142,12 @@ http.createServer(function (req, res) {
 		var allplayers = '{';
 		for(var i = 0;i<players.length;i++){
 			if(i == 0 || allplayers == '{'){
-				if(players[i] != undefined){ // If the player actually exists add him to the list.
+				if(players[i] != undefined && players[i].room == players[q.query.ping].room){ // If the player actually exists and he is in my room add him to the list.
 					allplayers += '"p' + i + '":"' + players[i].name + ': ' + players[i].score + '"';
 				}
 			}
 			else{
-				if(players[i] != undefined){ // If the player actually exists add him to the list.
+				if(players[i] != undefined && players[i].room == players[q.query.ping].room){ // If the player actually exists and he is in my room add him to the list.
 					allplayers += ',"p' + i + '":"' + players[i].name + ': ' + players[i].score + '"';
 				}
 			}
@@ -182,14 +159,18 @@ http.createServer(function (req, res) {
 		res.end("404");
 	}
 	if(players.length > 0){
-		fixturns();
-		if(players[turn] != null){
-			if(players[turn].score < 999){
-				if(score > 999){
-					showtakebutton = true;
-				}
-				else{
-					showtakebutton = false;
+		for(var i=0;i<rooms.length;i++){
+			if(i==0){
+				fixturns(i);
+			}
+			if(players[rooms[i].turn] != null){
+				if(players[rooms[i].turn].score < 999){
+					if(rooms[i].score > 999){
+						rooms[i].showtakebutton = true;
+					}
+					else{
+						rooms[i].showtakebutton = false;
+					}
 				}
 			}
 		}
@@ -200,196 +181,196 @@ http.createServer(function (req, res) {
 function play(player, button){ // Line 30 shows all the button codes
 	if(button == -1){
         // Roll all dice.
-		RollAll();
-		showrollallbutton = false;
+		RollAll(players[player].room);
+		rooms[players[player].room].showrollallbutton = false;
 	}
-	if(button == 0 && allowroll){
+	if(button == 0 && rooms[players[player].room].allowroll){
         // Roll the available dice.
-		roll();
-		showrollallbutton = false;
+		roll(players[player].room);
+		rooms[players[player].room].showrollallbutton = false;
 	}
 	if(button == 1){
         // Take dice 1
         var r = button-1;;
-		if(dices[r] == 1){
-            score += 100;
-			dices[r] = -1;
-			if(players[turn].score > 999){
-				showtakebutton = true;
+		if(rooms[players[player].room].dices[r] == 1){
+            rooms[players[player].room].score += 100;
+			rooms[players[player].room].dices[r] = -1;
+			if(players[rooms[players[player].room].turn].score > 999){
+				rooms[players[player].room].showtakebutton = true;
 			}
-			allowroll = true;
-			checkThreeOfAKind();
+			rooms[players[player].room].allowroll = true;
+			checkThreeOfAKind(rooms[players[player].room]);
         }
-        if(dices[r] == 5){
-            score += 50;
-			dices[r] = -1;
-			if(players[turn].score > 999){
-				showtakebutton = true;
+        if(rooms[players[player].room].dices[r] == 5){
+            rooms[players[player].room].score += 50;
+			rooms[players[player].room].dices[r] = -1;
+			if(players[rooms[players[player].room].turn].score > 999){
+				rooms[players[player].room].showtakebutton = true;
 			}
-			allowroll = true;
-			checkThreeOfAKind();
+			rooms[players[player].room].allowroll = true;
+			checkThreeOfAKind(rooms[players[player].room]);
 		}
     }
 	if(button == 2){
 		// Take dice 2
 		var r = button-1;;
-		if(dices[r] == 1){
-            score += 100;
-			dices[r] = -1;
-			if(players[turn].score > 999){
-				showtakebutton = true;
+		if(rooms[players[player].room].dices[r] == 1){
+            rooms[players[player].room].score += 100;
+			rooms[players[player].room].dices[r] = -1;
+			if(players[rooms[players[player].room].turn].score > 999){
+				rooms[players[player].room].showtakebutton = true;
 			}
-			allowroll = true;
-			checkThreeOfAKind();
+			rooms[players[player].room].allowroll = true;
+			checkThreeOfAKind(rooms[players[player].room]);
         }
-        if(dices[r] == 5){
-            score += 50;
-			dices[r] = -1;
-			if(players[turn].score > 999){
-				showtakebutton = true;
+        if(rooms[players[player].room].dices[r] == 5){
+            rooms[players[player].room].score += 50;
+			rooms[players[player].room].dices[r] = -1;
+			if(players[rooms[players[player].room].turn].score > 999){
+				rooms[players[player].room].showtakebutton = true;
 			}
-			allowroll = true;
-			checkThreeOfAKind();
+			rooms[players[player].room].allowroll = true;
+			checkThreeOfAKind(rooms[players[player].room]);
 		}
 	}
 	if(button == 3){
 		// Take dice 3
 		var r = button-1;;
-		if(dices[r] == 1){
-            score += 100;
-			dices[r] = -1;
-			if(players[turn].score > 999){
-				showtakebutton = true;
+		if(rooms[players[player].room].dices[r] == 1){
+            rooms[players[player].room].score += 100;
+			rooms[players[player].room].dices[r] = -1;
+			if(players[rooms[players[player].room].turn].score > 999){
+				rooms[players[player].room].showtakebutton = true;
 			}
-			allowroll = true;
-			checkThreeOfAKind();
+			rooms[players[player].room].allowroll = true;
+			checkThreeOfAKind(rooms[players[player].room]);
         }
-        if(dices[r] == 5){
-            score += 50;
-			dices[r] = -1;
-			if(players[turn].score > 999){
-				showtakebutton = true;
+        if(rooms[players[player].room].dices[r] == 5){
+            rooms[players[player].room].score += 50;
+			rooms[players[player].room].dices[r] = -1;
+			if(players[rooms[players[player].room].turn].score > 999){
+				rooms[players[player].room].showtakebutton = true;
 			}
-			allowroll = true;
-			checkThreeOfAKind();
+			rooms[players[player].room].allowroll = true;
+			checkThreeOfAKind(rooms[players[player].room]);
         }
 	}
 	if(button == 4){
 		// Take dice 4
 		var r = button-1;;
-		if(dices[r] == 1){
-            score += 100;
-			dices[r] = -1;
-			if(players[turn].score > 999){
-				showtakebutton = true;
+		if(rooms[players[player].room].dices[r] == 1){
+            rooms[players[player].room].score += 100;
+			rooms[players[player].room].dices[r] = -1;
+			if(players[rooms[players[player].room].turn].score > 999){
+				rooms[players[player].room].showtakebutton = true;
 			}
-			allowroll = true;
-			checkThreeOfAKind();
+			rooms[players[player].room].allowroll = true;
+			checkThreeOfAKind(rooms[players[player].room]);
         }
-        if(dices[r] == 5){
-            score += 50;
-			dices[r] = -1;
-			if(players[turn].score > 999){
-				showtakebutton = true;
+        if(rooms[players[player].room].dices[r] == 5){
+            rooms[players[player].room].score += 50;
+			rooms[players[player].room].dices[r] = -1;
+			if(players[rooms[players[player].room].turn].score > 999){
+				rooms[players[player].room].showtakebutton = true;
 			}
-			allowroll = true;
-			checkThreeOfAKind();
+			rooms[players[player].room].allowroll = true;
+			checkThreeOfAKind(rooms[players[player].room]);
         }
 	}
 	if(button == 5){
 		// Take dice 5
 		var r = button-1;;
-		if(dices[r] == 1){
-            score += 100;
-			dices[r] = -1;
-			if(players[turn].score > 999){
-				showtakebutton = true;
+		if(rooms[players[player].room].dices[r] == 1){
+            rooms[players[player].room].score += 100;
+			rooms[players[player].room].dices[r] = -1;
+			if(players[rooms[players[player].room].turn].score > 999){
+				rooms[players[player].room].showtakebutton = true;
 			}
-			allowroll = true;
-			checkThreeOfAKind();
+			rooms[players[player].room].allowroll = true;
+			checkThreeOfAKind(rooms[players[player].room]);
         }
-        if(dices[r] == 5){
-            score += 50;
-			dices[r] = -1;
-			if(players[turn].score > 999){
-				showtakebutton = true;
+        if(rooms[players[player].room].dices[r] == 5){
+            rooms[players[player].room].score += 50;
+			rooms[players[player].room].dices[r] = -1;
+			if(players[rooms[players[player].room].turn].score > 999){
+				rooms[players[player].room].showtakebutton = true;
 			}
-			allowroll = true;
-			checkThreeOfAKind();
+			rooms[players[player].room].allowroll = true;
+			checkThreeOfAKind(rooms[players[player].room]);
         }
 	}
 	if(button == 6){
 		// Take dice 6
 		var r = button-1;
-		if(dices[r] == 1){
-            score += 100;
-			dices[r] = -1;
-			if(players[turn].score > 999){
-				showtakebutton = true;
+		if(rooms[players[player].room].dices[r] == 1){
+            rooms[players[player].room].score += 100;
+			rooms[players[player].room].dices[r] = -1;
+			if(players[rooms[players[player].room].turn].score > 999){
+				rooms[players[player].room].showtakebutton = true;
 			}
-			allowroll = true;
-			checkThreeOfAKind();
+			rooms[players[player].room].allowroll = true;
+			checkThreeOfAKind(rooms[players[player].room]);
         }
-        if(dices[r] == 5){
-            score += 50;
-			dices[r] = -1;
-			if(players[turn].score > 999){
-				showtakebutton = true;
+        if(rooms[players[player].room].dices[r] == 5){
+            rooms[players[player].room].score += 50;
+			rooms[players[player].room].dices[r] = -1;
+			if(players[rooms[players[player].room].turn].score > 999){
+				rooms[players[player].room].showtakebutton = true;
 			}
-			allowroll = true;
-			checkThreeOfAKind();
+			rooms[players[player].room].allowroll = true;
+			checkThreeOfAKind(rooms[players[player].room]);
         }
 	}
 	if(button == 7){
 		// Take big dice 1
-		score += dices[6];
-		dices[6] = 0;
+		rooms[players[player].room].score += rooms[players[player].room].dices[6];
+		rooms[players[player].room].dices[6] = 0;
 		var numbertaken = 0;
 		for(var i=0;i<6;i++){
-			if(dices[i] == bigdicebasenumber1 && numbertaken != bigdicenumber1){
-				dices[i] = -1;
+			if(rooms[players[player].room].dices[i] == rooms[players[player].room].bigdicebasenumber1 && numbertaken != rooms[players[player].room].bigdicenumber1){
+				rooms[players[player].room].dices[i] = -1;
 				numbertaken += 1;
 			}
 		}
-		bigdicenumber1 = 0;
-		bigdicebasenumber1 = 0;
-		if(players[turn].score > 999){
-			showtakebutton = true;
+		rooms[players[player].room].bigdicenumber1 = 0;
+		rooms[players[player].room].bigdicebasenumber1 = 0;
+		if(players[rooms[players[player].room].turn].score > 999){
+			rooms[players[player].room].showtakebutton = true;
 		}
-		allowroll = true;
-		checkThreeOfAKind();
+		rooms[players[player].room].allowroll = true;
+		checkThreeOfAKind(rooms[players[player].room]);
 	}
 	if(button == 8){
 		// Take big dice 2
-		score += dices[7];
-		dices[7] = 0;
+		rooms[players[player].room].score += dices[7];
+		rooms[players[player].room].dices[7] = 0;
 		var numbertaken = 0;
 		for(var i=0;i<6;i++){
-			if(dices[i] == bigdicebasenumber2 && numbertaken != bigdicenumber2){
-				dices[i] = -1;
+			if(rooms[players[player].room].dices[i] == rooms[players[player].room].bigdicebasenumber2 && numbertaken != rooms[players[player].room].bigdicenumber2){
+				rooms[players[player].room].dices[i] = -1;
 				numbertaken += 1;
 			}
 		}
-		bigdicenumber2 = 0;
-		bigdicebasenumber2 = 0;
+		rooms[players[player].room].bigdicenumber2 = 0;
+		rooms[players[player].room].bigdicebasenumber2 = 0;
 		if(players[turn].score > 999){
-			showtakebutton = true;
+			rooms[players[player].room].showtakebutton = true;
 		}
-		allowroll = true;
-		checkThreeOfAKind();
+		rooms[players[player].room].allowroll = true;
+		checkThreeOfAKind(rooms[players[player].room]);
 	}
 	if(button == 9){
 		// Take it
-		if(players[turn].score == 0){
-			if(score > 999){
-				players[turn].score += score;
-				turn += 1;
-				allowroll = true;
-				if(players[turn] != undefined){
-					if(players[turn].score < 999){
-						score = 0;
+		if(players[rooms[players[player].room].turn].score == 0){
+			if(rooms[players[player].room].score > 999){
+				players[player].score += rooms[players[player].room].score;
+				rooms[players[player].room].turn += 1;
+				rooms[players[player].room].allowroll = true;
+				if(players[rooms[players[player].room].turn] != undefined){
+					if(players[rooms[players[player].room].turn].score < 999){
+						rooms[players[player].room].score = 0;
 						for(var i=0;i<6;i++){
-							dices[i] = 0;
+							rooms[players[player].room].dices[i] = 0;
 						}
 					}
 				}
@@ -397,9 +378,9 @@ function play(player, button){ // Line 30 shows all the button codes
 					for(var i=0;i<players.length;i++){
 						if(players[i] != undefined){
 							if(players[i].score < 999){
-								score = 0;
+								rooms[players[player].room].score = 0;
 								for(var i=0;i<6;i++){
-									dices[i] = 0;
+									rooms[players[player].room].dices[i] = 0;
 								}
 							}
 						}
@@ -408,14 +389,14 @@ function play(player, button){ // Line 30 shows all the button codes
 			}
 		}
 		else{
-			players[turn].score += score;
-			turn += 1;
-			allowroll = true;
-			if(players[turn] != undefined){
-				if(players[turn].score < 999){
-					score = 0;
+			players[player].score += rooms[players[player].room].score;
+			rooms[players[player].room].turn += 1;
+			rooms[players[player].room].allowroll = true;
+			if(players[rooms[players[player].room].turn] != undefined){
+				if(players[rooms[players[player].room].turn].score < 999){
+					rooms[players[player].room].score = 0;
 					for(var i=0;i<6;i++){
-						dices[i] = 0;
+						rooms[players[player].room].dices[i] = 0;
 					}
 				}
 			}
@@ -423,36 +404,36 @@ function play(player, button){ // Line 30 shows all the button codes
 				for(var i=0;i<players.length;i++){
 					if(players[i] != undefined){
 						if(players[i].score < 999){
-							score = 0;
+							rooms[players[player].room].score = 0;
 							for(var i=0;i<6;i++){
-								dices[i] = 0;
+								rooms[players[player].room].dices[i] = 0;
 							}
 						}
 					}
 				}
 			}
-			fixturns();
-			console.log(players[turn]);
-			if(players[turn] != undefined){
-				if(players[turn].score > 999){
-					showrollallbutton = true;
+			fixturns(players[player].room);
+			console.log(players[rooms[players[player].room].turn]);
+			if(players[rooms[players[player].room].turn] != undefined){
+				if(players[rooms[players[player].room].turn].score > 999){
+					rooms[players[player].room].showrollallbutton = true;
 				}
 				else{
-					showrollallbutton = false;
+					rooms[players[player].room].showrollallbutton = false;
 				}
 			}
 		}
-		showtakebutton = false;
+		rooms[players[player].room].showtakebutton = false;
 	}
 }
 
-function fixturns(){ // If the current player doens't exist then go to the next player that does exist. 
-	while(players[turn] == undefined){
-		if(players[turn] == undefined){
-			turn += 1;
+function fixturns(theroom){ // If the current player doens't exist then go to the next player that does exist. 
+	while(players[rooms[theroom].turn] == undefined){ //&& players[rooms[theroom].turn].room != theroom){
+		if(players[rooms[theroom].turn] == undefined){
+			rooms[theroom].turn += 1;
 		}
-		if(turn+1 > players.length){
-			turn = 0;
+		if(rooms[theroom].turn+1 > players.length){
+			rooms[theroom].turn = 0;
 		}
 	}
 }
@@ -465,16 +446,16 @@ function rolldice(){
     return num1;
 }
 
-function roll(){
-    if(allDicesDisabled()){ // IF all dices are disabled then roll them all.
+function roll(theroom){
+    if(allDicesDisabled(theroom)){ // IF all dices are disabled then roll them all.
         for(var i=0;i<6;i++){
-            dices[i] = 0;
+            rooms[theroom].dices[i] = 0;
         }
 	}
 
     for(var i=0;i<6;i++){ // Roll the available dice. 
-        if(dices[i] != -1){
-            dices[i] = rolldice();
+        if(rooms[theroom].dices[i] != -1){
+            rooms[theroom].dices[i] = rolldice();
         }
 	}
 
@@ -484,53 +465,53 @@ function roll(){
 	var b = true;
 
 	for(var i=0;i<6;i++){
-		if(dices[i] == 1 || dices[i] == 5){
+		if(rooms[theroom].dices[i] == 1 || rooms[theroom].dices[i] == 5){
 			b = false;
 		}
 	}
 	
 	// Check if there is 3 of a kind of something
 
-	checkThreeOfAKind();
+	checkThreeOfAKind(rooms[theroom]);
 
 	// Checking if the player broke
 	if(b == true){
-		score = 0;
+		rooms[theroom].score = 0;
 		for(var i=0;i<8;i++){ // Set all dices to 0. 
-			dices[i] = 0;
+			rooms[theroom].dices[i] = 0;
 		}
-		turn += 1;
-		showrollallbutton = false;
-		allowroll = true;
+		rooms[theroom].turn += 1;
+		rooms[theroom].showrollallbutton = false;
+		rooms[theroom].allowroll = true;
 	}
 	else{
-		allowroll = false;
+		rooms[theroom].allowroll = false;
 	}
 }
 
-function RollAll(){
-    score = 0;
+function RollAll(theroom){
+    rooms[theroom].score = 0;
     for(var i=0;i<6;i++){
-        dices[i] = 0;
+        rooms[theroom].dices[i] = 0;
     }
-    roll();
+    roll(theroom);
 }
 
-function allDicesDisabled(){
+function allDicesDisabled(theroom){
     var r = true;
     for(var i=0;i<6;i++){
-        if(dices[i] != -1){
+        if(rooms[theroom].dices[i] != -1){
             return false;
         }
     }
     return true;
 }
 
-function checkThreeOfAKind(){
+function checkThreeOfAKind(theroom){
 		// Check if there is 3 of a kind of something
-
-		dices[6] = 0;
-		dices[7] = 0;
+		console.log("the room:" + theroom.dices[6]);
+		theroom.dices[6] = 0;
+		theroom.dices[7] = 0;
 	
 		var numberofdice = [];
 		numberofdice.push(0);
@@ -541,22 +522,22 @@ function checkThreeOfAKind(){
 		numberofdice.push(0);
 	
 		for(var i=0;i<6;i++){
-			if(dices[i] == 1){
+			if(theroom.dices[i] == 1){
 				numberofdice[0] += 1;
 			}
-			if(dices[i] == 2){
+			if(theroom.dices[i] == 2){
 				numberofdice[1] += 1;
 			}
-			if(dices[i] == 3){
+			if(theroom.dices[i] == 3){
 				numberofdice[2] += 1;
 			}
-			if(dices[i] == 4){
+			if(theroom.dices[i] == 4){
 				numberofdice[3] += 1;
 			}
-			if(dices[i] == 5){
+			if(theroom.dices[i] == 5){
 				numberofdice[4] += 1;
 			}
-			if(dices[i] == 6){
+			if(theroom.dices[i] == 6){
 				numberofdice[5] += 1;
 			}
 		}
@@ -566,108 +547,108 @@ function checkThreeOfAKind(){
 			if(numberofdice[i] == 3){
 				b = false;
 				if(i != 0){
-					if(dices[6] == 0 || dices[6] == o*100){
-						dices[6] = o*100;
-						bigdicenumber1 = 3;
-						bigdicebasenumber1 = o;
+					if(theroom.dices[6] == 0 || theroom.dices[6] == o*100){
+						theroom.dices[6] = o*100;
+						theroom.bigdicenumber1 = 3;
+						theroom.bigdicebasenumber1 = o;
 					}
 					else{
-						dices[7] = o*100;
-						bigdicenumber2 = 3;
-						bigdicebasenumber2 = o;
+						theroom.dices[7] = o*100;
+						theroom.bigdicenumber2 = 3;
+						theroom.bigdicebasenumber2 = o;
 					}
 				}
 				else{
-					if(dices[6] == 0 || dices[6] == o*1000){
-						dices[6] = o*1000;
-						bigdicenumber1 = 3;
-						bigdicebasenumber1 = o;
+					if(theroom.dices[6] == 0 || theroom.dices[6] == o*1000){
+						theroom.dices[6] = o*1000;
+						theroom.bigdicenumber1 = 3;
+						theroom.bigdicebasenumber1 = o;
 					}
 					else{
-						dices[7] = o*1000;
-						bigdicenumber2 = 3;
-						bigdicebasenumber2 = o;
+						theroom.dices[7] = o*1000;
+						theroom.bigdicenumber2 = 3;
+						theroom.bigdicebasenumber2 = o;
 					}
 				}
 			}
 			if(numberofdice[i] == 4){
 				b = false;
 				if(i != 0){
-					if(dices[6] == 0 || dices[6] == o*100*2){
-						dices[6] = o*100*2;
-						bigdicenumber1 = 4;
-						bigdicebasenumber1 = o;
+					if(theroom.dices[6] == 0 || theroom.dices[6] == o*100*2){
+						theroom.dices[6] = o*100*2;
+						theroom.bigdicenumber1 = 4;
+						theroom.bigdicebasenumber1 = o;
 					}
 					else{
-						dices[7] = o*100*2;
-						bigdicenumber2 = 4;
-						bigdicebasenumber2 = o;
+						theroom.dices[7] = o*100*2;
+						theroom.bigdicenumber2 = 4;
+						theroom.bigdicebasenumber2 = o;
 					}
 				}
 				else{
-					if(dices[6] == 0 || dices[6] == o*1000*2){
-						dices[6] = o*1000*2;
-						bigdicenumber1 = 4;
-						bigdicebasenumber1 = o;
+					if(theroom.dices[6] == 0 || theroom.dices[6] == o*1000*2){
+						theroom.dices[6] = o*1000*2;
+						theroom.bigdicenumber1 = 4;
+						theroom.bigdicebasenumber1 = o;
 					}
 					else{
-						dices[7] = o*1000*2;
-						bigdicenumber2 = 4;
-						bigdicebasenumber2 = o;
+						theroom.dices[7] = o*1000*2;
+						theroom.bigdicenumber2 = 4;
+						theroom.bigdicebasenumber2 = o;
 					}
 				}
 			}
 			if(numberofdice[i] == 5){
 				b = false;
 				if(i != 0){
-					if(dices[6] == o || dices[6] == o*100*2*2){
-						dices[6] = o*100*2*2;
-						bigdicenumber1 = 5;
-						bigdicebasenumber1 = o;
+					if(theroom.dices[6] == o || theroom.dices[6] == o*100*2*2){
+						theroom.dices[6] = o*100*2*2;
+						theroom.bigdicenumber1 = 5;
+						theroom.bigdicebasenumber1 = o;
 					}
 					else{
-						dices[7] = o*100*2*2;
-						bigdicenumber2 = 5;
-						bigdicebasenumber2 = o;
+						theroom.dices[7] = o*100*2*2;
+						theroom.bigdicenumber2 = 5;
+						theroom.bigdicebasenumber2 = o;
 					}
 				}
 				else{
-					if(dices[6] == 0 || dices[6] == o*1000*2*2){
-						dices[6] = o*1000*2*2;
-						bigdicenumber1 = 5;
-						bigdicebasenumber1 = o;
+					if(theroom.dices[6] == 0 || theroom.dices[6] == o*1000*2*2){
+						theroom.dices[6] = o*1000*2*2;
+						theroom.bigdicenumber1 = 5;
+						theroom.bigdicebasenumber1 = o;
 					}
 					else{
-						dices[7] = o*1000*2*2;
-						bigdicenumber2 = 5;
-						bigdicebasenumber2 = o;
+						theroom.dices[7] = o*1000*2*2;
+						theroom.bigdicenumber2 = 5;
+						theroom.bigdicebasenumber2 = o;
 					}
 				}
 			}
 			if(numberofdice[i] == 6){
 				b = false;
 				if(i != 0){
-					if(dices[6] == 0 || dices[6] == o*100*2*2*2){
-						dices[6] = o*100*2*2*2;
-						bigdicenumber1 = 6;
-						bigdicebasenumber1 = o;
+					if(theroom.dices[6] == 0 || theroom.dices[6] == o*100*2*2*2){
+						theroom.dices[6] = o*100*2*2*2;
+						theroom.bigdicenumber1 = 6;
+						theroom.bigdicebasenumber1 = o;
 					}
 					else{
-						dices[7] = o*100*2*2*2;
-						bigdicenumber2 = 6;
-						bigdicebasenumber2 = o;
+						theroom.dices[7] = o*100*2*2*2;
+						theroom.bigdicenumber2 = 6;
+						theroom.bigdicebasenumber2 = o;
 					}
 				}
 				else{
-					if(dices[6] == 0 || dices[6] == o*1000*2*2){
-						dices[6] = o*1000*2*2*2;
-						bigdicenumber1 = 6;
-						bigdicebasenumber1 = o;
+					if(theroom.dices[6] == 0 || theroom.dices[6] == o*1000*2*2){
+						theroom.dices[6] = o*1000*2*2*2;
+						theroom.bigdicenumber1 = 6;
+						theroom.bigdicebasenumber1 = o;
 					}
 					else{
-						dices[7] = o*1000*2*2*2;
-						bigdicenumber2 = 6;
-						bigdicebasenumber2 = o;
+						theroom.dices[7] = o*1000*2*2*2;
+						theroom.bigdicenumber2 = 6;
+						theroom.bigdicebasenumber2 = o;
 					}
 				}
 			}
@@ -675,12 +656,12 @@ function checkThreeOfAKind(){
 	
 	
 		if(numberofdice[0] == 1 && numberofdice[1] == 1 && numberofdice[2] == 1 && numberofdice[3] == 1 && numberofdice[4] == 1 && numberofdice[5] == 1){
-			dices[6] = 500;
+			theroom.dices[6] = 500;
 			b= false;
 		}
 		else{
-			if(dices[6] == 500 && numberofdice[4] != 3){
-				dices[6] = 0;
+			if(theroom.dices[6] == 500 && numberofdice[4] != 3){
+				theroom.dices[6] = 0;
 			}
 		}
 }
