@@ -6,7 +6,6 @@
     </head>
     <body style="text-align: center;">
         <div id="gameroomdiv">
-            <button>Lobby (3)</button><button>Game Room 1 (9)</button>
         </div>
         <p id="playername" style="text-align: right"></p>
         <div id="gamediv">
@@ -39,6 +38,10 @@
 
             var testing = true; 
 
+            // Room Info
+            var rooms = [{name:"Lobby",num:0,players:3},{name:"Room 1",num:1,players:0},{name:"Room 2",num:2,players:0},{name:"Room 3",num:3,players:0}];
+            var roomdiv = document.getElementById("gameroomdiv");
+
             // Get all our HTML Elements
 
             var rollbutton = document.getElementById("rollbutton");
@@ -67,6 +70,7 @@
             var playername = "";
             var turn = 0;
             var score = 0;
+            var roomnum = null;
 
             var name = document.getElementById("name");
 
@@ -87,7 +91,7 @@
             // I think that url is just a tone and isn't getting anything from the web. 
 
             var roomname = document.getElementById("roomname");
-            
+
             /*var add = setInterval(function() {
                 // allow 1px inaccuracy by adding 1
                 var isScrolledToBottom = chat.scrollHeight - chat.clientHeight <= chat.scrollTop + 1;
@@ -117,6 +121,7 @@
                     update();
                     if(playernum != null){
                         updateChat();
+                        updateRooms();
                     }
                     if(!testing){
                         if(localbutton.checked && url != "http://192.168.0.100:8080"){
@@ -138,6 +143,18 @@
             //var url = "http://192.168.0.100:8080";
             //var url = "http://127.0.0.1:8080";  // For local testing only.
             //var url  = "http://localhost:8080";
+
+            function updateRooms(){
+                var texttosend = "";
+                for(var i=0;i<rooms.length;i++){
+                    texttosend += '<button value="' + rooms[i].num + '" onclick="bp(' + rooms[i].num + ')">' + rooms[i].name + ' (' + rooms[i].players + ')</button>';
+                }
+                roomdiv.innerHTML = texttosend;
+            }
+
+            function bp(thing){
+                rooms[thing].players += 1;
+            }
 
             function setup(){
                 var xhr = httpRequest('GET', url + "/setup");
