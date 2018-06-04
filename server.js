@@ -2,7 +2,7 @@ var http = require('http');
 var url = require('url');
 var requests = 0;
 
-var rooms = [{name:"Lobby",turn:0,score:0,dices:[0,0,0,0,0,0,0,0],bigdicenumber1:0,bigdicebasenumber1:0,bigdicenumber2:0,bigdicebasenumber2:0,showtakebutton:false,showrollallbutton:false,allowroll:true,chats:[],startscore:1000}];
+var rooms = [{name:"Lobby",turn:0,num:0,score:0,dices:[0,0,0,0,0,0,0,0],bigdicenumber1:0,bigdicebasenumber1:0,bigdicenumber2:0,bigdicebasenumber2:0,showtakebutton:false,showrollallbutton:false,allowroll:true,chats:[],startscore:1000,players:0},{name:"The Room of Destiny",turn:0,num:1,score:0,dices:[0,0,0,0,0,0,0,0],bigdicenumber1:0,bigdicebasenumber1:0,bigdicenumber2:0,bigdicebasenumber2:0,showtakebutton:false,showrollallbutton:false,allowroll:true,chats:[],startscore:1000,players:0}];
 
 var players = [];
 
@@ -83,7 +83,7 @@ http.createServer(function (req, res) {
 	else if(q.query.sendchat == "/restart"){
 		chats.push('The Game has been restarted.');
 		console.log("Game Reset");
-		var roomreset = 0;
+		var roomreset = 0; // For now this only resets the lobby
 		for(var i=0;i<6;i++){
 			rooms[roomreset].dices[i] = 0;
 		}
@@ -112,6 +112,12 @@ http.createServer(function (req, res) {
 		rooms[players[q.query.player].room].chats.push(players[q.query.player].name + " is now known as " + q.query.setname);
 		players[q.query.player].name = q.query.setname;
 		res.end("name changed");
+	}
+	else if(q.query.roomrequest != null){
+		res.end(JSON.stringify(rooms));
+	}
+	else if(q.query.changeroom != null){
+		players[q.query.player].room = q.query.changeroom;
 	}
 	else if(q.query.player != null){ // Then it is a attempt to play.
 		console.log("Play Request  " + requests);
@@ -173,6 +179,14 @@ http.createServer(function (req, res) {
 					}
 				}
 			}
+		}
+	}
+	for(var i=0;i<rooms.length;i++){  // Reset the amount of players in each room.
+		rooms[i].players = 0;
+	}
+	for(var i=0;i<players.length;i++){  // Set the amount of players in each room.
+		if(players[i] != undefined){
+			rooms[players[i].room].players += 1;
 		}
 	}
 }).listen(8080);
@@ -427,7 +441,7 @@ function play(player, button){ // Line 30 shows all the button codes
 	}
 }
 
-function fixturns(theroom){ // If the current player doens't exist then go to the next player that does exist. 
+function fixturns(theroom){ // If the current player doens't exist then go to the next player that does exist and is in the right room. TODO
 	while(players[rooms[theroom].turn] == undefined){ //&& players[rooms[theroom].turn].room != theroom){
 		if(players[rooms[theroom].turn] == undefined){
 			rooms[theroom].turn += 1;

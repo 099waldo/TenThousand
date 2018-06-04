@@ -5,12 +5,12 @@
         <meta name="viewport" content="width=device-width"> 
     </head>
     <body style="text-align: center;">
-        <div id="gameroomdiv">
-        </div>
         <p id="playername" style="text-align: right"></p>
         <div id="gamediv">
             Your name: <input id="name" type="text" style="text-align: center;" onchange="changeName()"/><br><br>
             <h2 id="roomname"></h2>
+            <div id="gameroomdiv">
+            </div><br>
             <button onclick="RollAll()" id="rollallbutton" class="rollbutton">Roll All the Dice</button>
             <button onclick="roll()" id="rollbutton" class="rollbutton">Roll The Dice</button><br><br>
             <button onclick="dice1()" id = "dice1" class="dice">0</button>
@@ -21,7 +21,6 @@
             <button onclick="dice6()" id = "dice6" class="dice">0</button><br>
             <button onclick="bigDice1()" id="bigdice1" class="dice">0</button>
             <button onclick="bigDice2()" id="bigdice2" class="dice">0</button><br><br>
-            <p id = "scoreText"></p>
             <button onclick="takeit()" id="takeitbutton"  class="rollbutton">Take it</button>
             <p id ="infopar"></p>
             <p id="turnnotification" style="color: red"></p>
@@ -39,7 +38,7 @@
             var testing = true; 
 
             // Room Info
-            var rooms = [{name:"Lobby",num:0,players:3},{name:"Room 1",num:1,players:0},{name:"Room 2",num:2,players:0},{name:"Room 3",num:3,players:0}];
+            var rooms = [];
             var roomdiv = document.getElementById("gameroomdiv");
 
             // Get all our HTML Elements
@@ -58,7 +57,6 @@
             var bigdice1 = document.getElementById("bigdice1");
             var bigdice2 = document.getElementById("bigdice2");
 
-            var scoreText = document.getElementById("scoreText");
             var infopar = document.getElementById("infopar");
             var scorepar = document.getElementById("scorepar");
             var namepar = document.getElementById("playername");
@@ -121,7 +119,6 @@
                     update();
                     if(playernum != null){
                         updateChat();
-                        updateRooms();
                     }
                     if(!testing){
                         if(localbutton.checked && url != "http://192.168.0.100:8080"){
@@ -138,6 +135,9 @@
                         url = "http://127.0.0.1:8080";
                     }
                 } ,1000);
+                setInterval(function(){
+                    updateRooms();
+                },5000);
              }
             var url = "http://205.206.37.44:8080";
             //var url = "http://192.168.0.100:8080";
@@ -145,15 +145,24 @@
             //var url  = "http://localhost:8080";
 
             function updateRooms(){
-                var texttosend = "";
-                for(var i=0;i<rooms.length;i++){
-                    texttosend += '<button value="' + rooms[i].num + '" onclick="bp(' + rooms[i].num + ')">' + rooms[i].name + ' (' + rooms[i].players + ')</button>';
-                }
-                roomdiv.innerHTML = texttosend;
+                var xhr = httpRequest('GET', url + "/?roomrequest=" + roomnum);
+                setTimeout(function(){
+                    rooms = JSON.parse(xhr.responseText);
+                    var texttosend = "";
+                    for(var i=0;i<rooms.length;i++){
+                        texttosend += '<button value="' + rooms[i].num + '" onclick="gotoroom(' + rooms[i].num + ')">' + rooms[i].name + ' (' + rooms[i].players + ')</button>';
+                    }
+                    roomdiv.innerHTML = texttosend;
+                    roomname.innerHTML = rooms[roomnum].name;
+                },500);
             }
 
-            function bp(thing){
-                rooms[thing].players += 1;
+            function gotoroom(theroom){
+                var xhr = httpRequest('GET', url + "/?player=" + playernum + '&changeroom=' + theroom);
+                setTimeout(function(){
+                    updateRooms();
+                    roomnum = theroom;
+                },500);
             }
 
             function setup(){
@@ -168,6 +177,7 @@
                     document.getElementById("name").value = playername;
                 }, 500);
                 roomnum = 0;
+                updateRooms();
             }
 
             function pingserver(){
