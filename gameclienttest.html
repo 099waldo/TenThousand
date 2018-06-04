@@ -167,6 +167,7 @@
                     playername = "Player " + playernum;
                     document.getElementById("name").value = playername;
                 }, 500);
+                roomnum = 0;
             }
 
             function pingserver(){
@@ -264,7 +265,7 @@
                     setup();
                 }
                 else{
-                    xhr = httpRequest('GET', url + "/?update=" + playernum);
+                    xhr = httpRequest('GET', url + "/?update=" + roomnum);
                     setTimeout(function(){ 
                         infopar.innerHTML = xhr.responseText;
                         var results = JSON.parse(xhr.responseText);

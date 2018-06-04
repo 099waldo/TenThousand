@@ -59,7 +59,7 @@ http.createServer(function (req, res) {
 		players[n].ping = setTimeout(function(){
 			delete players[n];
 			console.log("Kicked player " + p);
-			chats.push("Player " + p + " left the game.");
+			rooms[0].chats.push("Player " + p + " left the game.");
 			console.log(players);
 			console.log("players.length: " + players.length);
 		}, 10000);
@@ -104,7 +104,7 @@ http.createServer(function (req, res) {
 	else if(q.query.sendchat != null){ // It is a send chat request
 		if(q.query.sendchat != ""){
 			rooms[0].chats.push(players[q.query.player].name + ": " + q.query.sendchat);
-			console.log(rooms[0].chats[chats.length-1]);
+			console.log(rooms[0].chats[rooms[0].chats.length-1]);
 		}
 		res.end('Chat send');
 	}
@@ -133,7 +133,7 @@ http.createServer(function (req, res) {
         }
 		players[q.query.ping].ping = null;
 		players[q.query.ping].ping = setTimeout(function(){
-			room[players[q.query.ping].room].chats.push(players[q.query.ping].name + " left the game.");
+			rooms[players[q.query.ping].room].chats.push(players[q.query.ping].name + " left the game.");
 			delete players[q.query.ping];
 			console.log("Kicked player " + q.query.ping);
 			console.log(players);
