@@ -117,6 +117,7 @@ http.createServer(function (req, res) {
 		res.end(JSON.stringify(rooms));
 	}
 	else if(q.query.changeroom != null){
+		players[q.query.player].chat = rooms[q.query.changeroom].chats.length;
 		players[q.query.player].room = q.query.changeroom;
 	}
 	else if(q.query.player != null){ // Then it is a attempt to play.
