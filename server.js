@@ -2,7 +2,7 @@ var http = require('http');
 var url = require('url');
 var requests = 0;
 
-var rooms = [{name:"Lobby",turn:0,num:0,score:0,dices:[0,0,0,0,0,0,0,0],bigdicenumber1:0,bigdicebasenumber1:0,bigdicenumber2:0,bigdicebasenumber2:0,showtakebutton:false,showrollallbutton:false,allowroll:true,chats:[],startscore:1000,players:0},{name:"The Room of Destiny",turn:0,num:1,score:0,dices:[0,0,0,0,0,0,0,0],bigdicenumber1:0,bigdicebasenumber1:0,bigdicenumber2:0,bigdicebasenumber2:0,showtakebutton:false,showrollallbutton:false,allowroll:true,chats:[],startscore:1000,players:0}];
+var rooms = [{name:"Lobby",turn:0,num:0,score:0,dices:[0,0,0,0,0,0,0,0],bigdicenumber1:0,bigdicebasenumber1:0,bigdicenumber2:0,bigdicebasenumber2:0,showtakebutton:false,showrollallbutton:false,allowroll:true,chats:[],startscore:1000,players:0},{name:"Room #1",turn:0,num:1,score:0,dices:[0,0,0,0,0,0,0,0],bigdicenumber1:0,bigdicebasenumber1:0,bigdicenumber2:0,bigdicebasenumber2:0,showtakebutton:false,showrollallbutton:false,allowroll:true,chats:[],startscore:1000,players:0}];
 
 var players = [];
 
@@ -117,8 +117,10 @@ http.createServer(function (req, res) {
 		res.end(JSON.stringify(rooms));
 	}
 	else if(q.query.changeroom != null){
-		players[q.query.player].chat = rooms[q.query.changeroom].chats.length;
-		players[q.query.player].room = q.query.changeroom;
+		if(q.query.player != undefined){
+			players[q.query.player].chat = rooms[q.query.changeroom].chats.length;
+			players[q.query.player].room = q.query.changeroom;
+		}
 	}
 	else if(q.query.player != null){ // Then it is a attempt to play.
 		console.log("Play Request  " + requests);
