@@ -19,6 +19,7 @@ var players = [];
                 8: Big Dice 2
                 9: Take it Button
             */
+console.log("Server Started.");
 
 
 http.createServer(function (req, res) {
