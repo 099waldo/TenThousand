@@ -47,6 +47,7 @@ var chats = [];
 
 var startscore = 0;
 //var startscore = 1000; // For debuging
+console.log("Server Started.");
 
 http.createServer(function (req, res) {
 	//res.setHeader('Access-Control-Allow-Origin', 'http://waldoweb.net'); // Don't delete this line.
