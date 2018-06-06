@@ -89,6 +89,7 @@
             // I think that url is just a tone and isn't getting anything from the web. 
 
             var roomname = document.getElementById("roomname");
+            var pings = 0;
 
             /*var add = setInterval(function() {
                 // allow 1px inaccuracy by adding 1
@@ -153,7 +154,6 @@
                         texttosend += '<button value="' + rooms[i].num + '" onclick="gotoroom(' + rooms[i].num + ')">' + rooms[i].name + ' (' + rooms[i].players + ')</button>';
                     }
                     roomdiv.innerHTML = texttosend;
-                    roomname.innerHTML = rooms[roomnum].name;
                 },500);
             }
 
@@ -161,7 +161,7 @@
                 var xhr = httpRequest('GET', url + "/?player=" + playernum + '&changeroom=' + theroom);
                 setTimeout(function(){
                     updateRooms();
-                    roomnum = theroom;
+                    //roomnum = theroom;
                 },500);
             }
 
@@ -181,12 +181,21 @@
             }
 
             function pingserver(){
+                pings += 1;
+                //console.log(pings);
                 var xhr = httpRequest('GET', url + '/?ping=' + playernum);
                 setTimeout(function(){ 
-                    if(xhr.responseText == 'RESET' && playernum != null){
+                    if(xhr.responseText == 'RESET'){// && playernum != null){
+                        playernum = null;
                         setup();
                         return;
                     }
+                    if(xhr.responseText == ''){
+                        playernum = null;
+                        setup();
+                        return;
+                    }
+                    console.log(pings + " " + xhr.responseText);
                     var results = JSON.parse(xhr.responseText);
                     scorepar.innerHTML = '<br>';
                     writeScore(results.p0,0);  // Figure out a way to change this to a for loop later. 
@@ -238,10 +247,10 @@
                     }
             }
 
-            var xhr = httpRequest('GET', url);
-            setTimeout(function(){ 
+            //var xhr = httpRequest('GET', url);
+            //setTimeout(function(){ 
                 //document.write(xhr.responseText);
-            }, 1000);
+            //}, 1000);
 
             function update(){
                 //Update everything in the game.
@@ -275,7 +284,7 @@
                     setup();
                 }
                 else{
-                    xhr = httpRequest('GET', url + "/?update=" + roomnum);
+                    xhr = httpRequest('GET', url + "/?update=" + playernum);
                     setTimeout(function(){ 
                         infopar.innerHTML = xhr.responseText;
                         var results = JSON.parse(xhr.responseText);
@@ -303,6 +312,9 @@
                         else{
                             rollallbutton.disabled = true;
                         }
+                        roomnum = results.room;
+                        roomname.innerHTML = rooms[roomnum].name;
+                        //roomname.innerHTML = rooms[results.room].name;
                     }, 500);
                 }
                 disableDices();

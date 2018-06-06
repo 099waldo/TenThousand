@@ -32,11 +32,12 @@ http.createServer(function (req, res) {
 
 	if(q.query.update != null){ // Then it is a game update request.  This function will require the number of the player that is requesting the data.
 		//console.log("Update Request  " + requests);
-		var playerroom = q.query.update;
+		console.log(q.query.update);
+		var playerroom = players[q.query.update].room;
 		var gamevalues = '{"d1":"' + rooms[playerroom].dices[0] + '", "d2":"' + rooms[playerroom].dices[1] + '", "d3":"'+rooms[playerroom].dices[2]
          + '", "d4":"'+rooms[playerroom].dices[3] + '", "d5":"' + rooms[playerroom].dices[4] + '", "d6":"' + rooms[playerroom].dices[5] + '", "turn":"'
 		  + rooms[playerroom].turn + '", "bd1":"' + rooms[playerroom].dices[6] + '", "bd2":"' + rooms[playerroom].dices[7] + '", "score":"' + rooms[playerroom].score + '", "takebutton":"'
-		   + rooms[playerroom].showtakebutton + '", "rollallbutton":"' + rooms[playerroom].showrollallbutton + '"}';
+		   + rooms[playerroom].showtakebutton + '", "rollallbutton":"' + rooms[playerroom].showrollallbutton + '", "room":"' + playerroom + '"}';
 		// Servers must return text in JSON format. eg. '{ "name":"John", "age":31, "city":"New York" }'
 		res.end(gamevalues);
 	}
@@ -118,7 +119,8 @@ http.createServer(function (req, res) {
 		res.end(JSON.stringify(rooms));
 	}
 	else if(q.query.changeroom != null){
-		if(q.query.player != undefined){
+		console.log("Change Room Request");
+		if(players[q.query.player] != undefined){
 			players[q.query.player].chat = rooms[q.query.changeroom].chats.length;
 			players[q.query.player].room = q.query.changeroom;
 		}
@@ -193,6 +195,7 @@ http.createServer(function (req, res) {
 			rooms[players[i].room].players += 1;
 		}
 	}
+	res.end("Something is broken :(");
 }).listen(8080);
 
 
@@ -445,14 +448,27 @@ function play(player, button){ // Line 30 shows all the button codes
 	}
 }
 
-function fixturns(theroom){ // If the current player doens't exist then go to the next player that does exist and is in the right room. TODO
-	while(players[rooms[theroom].turn] == undefined){ //&& players[rooms[theroom].turn].room != theroom){
+function fixturns(theroom){ // If the current player doens't exist then go to the next player that does exist and is in the right room. 
+	while(players[rooms[theroom].turn] == undefined){
 		if(players[rooms[theroom].turn] == undefined){
 			rooms[theroom].turn += 1;
 		}
 		if(rooms[theroom].turn+1 > players.length){
 			rooms[theroom].turn = 0;
 		}
+	}
+	var anyplayersinroom = false;
+	if(players.length > 0){
+		for(var i=0;i<players.length;i++){
+			if(players[i] != undefined){
+				if(players[i].room == theroom){
+					anyplayersinroom=true;
+				}
+			}
+		}
+	}
+	if(players[rooms[theroom].turn].room != theroom && anyplayersinroom == true){ // If the player that you found is not in the right room then try again.
+		fixturns(theroom);
 	}
 }
 
