@@ -2,7 +2,7 @@ var http = require('http');
 var url = require('url');
 var requests = 0;
 
-var turn = 0;  
+var turn = 0;
 var score = 0;
 
 var dices = [];
@@ -54,7 +54,7 @@ http.createServer(function (req, res) {
 	res.setHeader('Access-Control-Allow-Origin', null); // For local testing.
 	res.writeHead(200, {'Content-Type': 'text/html'});
 	requests += 1;
-	
+
 	var q = url.parse(req.url, true);
 
 	if(q.path == "/update"){ // Then it is a game update request.
@@ -91,12 +91,12 @@ http.createServer(function (req, res) {
 			console.log("players.length: " + players.length);
 		}, 10000);
 		console.log("Player " + players[n].name  + " has joined");
-		setTimeout(function(){ 
+		setTimeout(function(){
 			chats.push(players[n].name + " has joined the game.");
 		}, 1000);
 		res.end('{"player":"' + (n).toString() + '"}');
 	}
-	else if(q.query.chatupdate != null){ // Give him the latest chat that he hasen't got. 
+	else if(q.query.chatupdate != null){ // Give him the latest chat that he hasen't got.
 		if(players[q.query.chatupdate] != null){
 			if(chats.length != 0 && chats[players[q.query.chatupdate].chat] != null){
 				players[q.query.chatupdate].chat += 1;
@@ -195,6 +195,7 @@ http.createServer(function (req, res) {
 			}
 		}
 	}
+	res.end('Something broke.');
 }).listen(8080);
 
 
@@ -447,7 +448,7 @@ function play(player, button){ // Line 30 shows all the button codes
 	}
 }
 
-function fixturns(){ // If the current player doens't exist then go to the next player that does exist. 
+function fixturns(){ // If the current player doens't exist then go to the next player that does exist.
 	while(players[turn] == undefined){
 		if(players[turn] == undefined){
 			turn += 1;
@@ -473,7 +474,7 @@ function roll(){
         }
 	}
 
-    for(var i=0;i<6;i++){ // Roll the available dice. 
+    for(var i=0;i<6;i++){ // Roll the available dice.
         if(dices[i] != -1){
             dices[i] = rolldice();
         }
@@ -489,7 +490,7 @@ function roll(){
 			b = false;
 		}
 	}
-	
+
 	// Check if there is 3 of a kind of something
 
 	checkThreeOfAKind();
@@ -497,7 +498,7 @@ function roll(){
 	// Checking if the player broke
 	if(b == true){
 		score = 0;
-		for(var i=0;i<8;i++){ // Set all dices to 0. 
+		for(var i=0;i<8;i++){ // Set all dices to 0.
 			dices[i] = 0;
 		}
 		turn += 1;
@@ -532,7 +533,7 @@ function checkThreeOfAKind(){
 
 		dices[6] = 0;
 		dices[7] = 0;
-	
+
 		var numberofdice = [];
 		numberofdice.push(0);
 		numberofdice.push(0);
@@ -540,7 +541,7 @@ function checkThreeOfAKind(){
 		numberofdice.push(0);
 		numberofdice.push(0);
 		numberofdice.push(0);
-	
+
 		for(var i=0;i<6;i++){
 			if(dices[i] == 1){
 				numberofdice[0] += 1;
@@ -561,7 +562,7 @@ function checkThreeOfAKind(){
 				numberofdice[5] += 1;
 			}
 		}
-	
+
 		for(var i=0;i<6;i++){
 			var o = i+1;
 			if(numberofdice[i] == 3){
@@ -673,8 +674,8 @@ function checkThreeOfAKind(){
 				}
 			}
 		}
-	
-	
+
+
 		if(numberofdice[0] == 1 && numberofdice[1] == 1 && numberofdice[2] == 1 && numberofdice[3] == 1 && numberofdice[4] == 1 && numberofdice[5] == 1){
 			dices[6] = 500;
 			b= false;
