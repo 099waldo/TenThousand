@@ -2,15 +2,15 @@
     <head>
         <title id="title">Ten Thousand</title>
         <link rel="stylesheet" type="text/css"href="tenthousand.css">
-        <meta name="viewport" content="width=device-width"> 
+        <meta name="viewport" content="width=device-width">
     </head>
     <body style="text-align: center;">
-        <div id="gameroomdiv">
-        </div>
         <p id="playername" style="text-align: right"></p>
         <div id="gamediv">
             Your name: <input id="name" type="text" style="text-align: center;" onchange="changeName()"/><br><br>
             <h2 id="roomname"></h2>
+            <div id="gameroomdiv">
+            </div><br>
             <button onclick="RollAll()" id="rollallbutton" class="rollbutton">Roll All the Dice</button>
             <button onclick="roll()" id="rollbutton" class="rollbutton">Roll The Dice</button><br><br>
             <button onclick="dice1()" id = "dice1" class="dice">0</button>
@@ -21,7 +21,6 @@
             <button onclick="dice6()" id = "dice6" class="dice">0</button><br>
             <button onclick="bigDice1()" id="bigdice1" class="dice">0</button>
             <button onclick="bigDice2()" id="bigdice2" class="dice">0</button><br><br>
-            <p id = "scoreText"></p>
             <button onclick="takeit()" id="takeitbutton"  class="rollbutton">Take it</button>
             <p id ="infopar"></p>
             <p id="turnnotification" style="color: red"></p>
@@ -29,17 +28,17 @@
         </div>
         Chat:
         <div id="chat">
-            
+
         </div><br>
         <input id="chatbox" placeholder="Chat here:"/><button id="chatsubmit" onclick="sendChat()" class="chatbutton">Send</button><br><br>
         Type /restart to restart the game<br>
         <input type="checkbox" name="localserver" value="local" id="localbutton">Local Server
         <script>
 
-            var testing = true; 
+            var testing = true;
 
             // Room Info
-            var rooms = [{name:"Lobby",num:0,players:3},{name:"Room 1",num:1,players:0},{name:"Room 2",num:2,players:0},{name:"Room 3",num:3,players:0}];
+            var rooms = [];
             var roomdiv = document.getElementById("gameroomdiv");
 
             // Get all our HTML Elements
@@ -54,11 +53,10 @@
             dices.push(document.getElementById("dice4"));
             dices.push(document.getElementById("dice5"));
             dices.push(document.getElementById("dice6"));
-            
+
             var bigdice1 = document.getElementById("bigdice1");
             var bigdice2 = document.getElementById("bigdice2");
 
-            var scoreText = document.getElementById("scoreText");
             var infopar = document.getElementById("infopar");
             var scorepar = document.getElementById("scorepar");
             var namepar = document.getElementById("playername");
@@ -87,10 +85,11 @@
             var turnNotIntervalGoing = false;
             var turnNotIntervalEnabled = true;
             var title = document.getElementById("title");
-            var snd2 = new Audio("data:audio/wav;base64,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qJrx4KOQjahZxWbcZgztj2c49nKmkId44S71j0c8eV9yDK6uPRzx5X18eDvjvQ6yKo9ZSS6l//8elePK/Lf//IInrOF/FvDoADYAGBMGb7FtErm5MXMlmPAJQVgWta7Zx2go+8xJ0UiCb8LHHdftWyLJE0QIAIsI+UbXu67dZMjmgDGCGl1H+vpF4NSDckSIkk7Vd+sxEhBQMRU8j/12UIRhzSaUdQ+rQU5kGeFxm+hb1oh6pWWmv3uvmReDl0UnvtapVaIzo1jZbf/pD6ElLqSX+rUmOQNpJFa/r+sa4e/pBlAABoAAAAA3CUgShLdGIxsY7AUABPRrgCABdDuQ5GC7DqPQCgbbJUAoRSUj+NIEig0YfyWUho1VBBBA//uQZB4ABZx5zfMakeAAAAmwAAAAF5F3P0w9GtAAACfAAAAAwLhMDmAYWMgVEG1U0FIGCBgXBXAtfMH10000EEEEEECUBYln03TTTdNBDZopopYvrTTdNa325mImNg3TTPV9q3pmY0xoO6bv3r00y+IDGid/9aaaZTGMuj9mpu9Mpio1dXrr5HERTZSmqU36A3CumzN/9Robv/Xx4v9ijkSRSNLQhAWumap82WRSBUqXStV/YcS+XVLnSS+WLDroqArFkMEsAS+eWmrUzrO0oEmE40RlMZ5+ODIkAyKAGUwZ3mVKmcamcJnMW26MRPgUw6j+LkhyHGVGYjSUUKNpuJUQoOIAyDvEyG8S5yfK6dhZc0Tx1KI/gviKL6qvvFs1+bWtaz58uUNnryq6kt5RzOCkPWlVqVX2a/EEBUdU1KrXLf40GoiiFXK///qpoiDXrOgqDR38JB0bw7SoL+ZB9o1RCkQjQ2CBYZKd/+VJxZRRZlqSkKiws0WFxUyCwsKiMy7hUVFhIaCrNQsKkTIsLivwKKigsj8XYlwt/WKi2N4d//uQRCSAAjURNIHpMZBGYiaQPSYyAAABLAAAAAAAACWAAAAApUF/Mg+0aohSIRobBAsMlO//Kk4soosy1JSFRYWaLC4qZBYWFRGZdwqKiwkNBVmoWFSJkWFxX4FFRQWR+LsS4W/rFRb/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////VEFHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAU291bmRib3kuZGUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMjAwNGh0dHA6Ly93d3cuc291bmRib3kuZGUAAAAAAAAAACU=");  
-            // I think that url is just a tone and isn't getting anything from the web. 
+            var snd2 = new Audio("data:audio/wav;base64,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qJrx4KOQjahZxWbcZgztj2c49nKmkId44S71j0c8eV9yDK6uPRzx5X18eDvjvQ6yKo9ZSS6l//8elePK/Lf//IInrOF/FvDoADYAGBMGb7FtErm5MXMlmPAJQVgWta7Zx2go+8xJ0UiCb8LHHdftWyLJE0QIAIsI+UbXu67dZMjmgDGCGl1H+vpF4NSDckSIkk7Vd+sxEhBQMRU8j/12UIRhzSaUdQ+rQU5kGeFxm+hb1oh6pWWmv3uvmReDl0UnvtapVaIzo1jZbf/pD6ElLqSX+rUmOQNpJFa/r+sa4e/pBlAABoAAAAA3CUgShLdGIxsY7AUABPRrgCABdDuQ5GC7DqPQCgbbJUAoRSUj+NIEig0YfyWUho1VBBBA//uQZB4ABZx5zfMakeAAAAmwAAAAF5F3P0w9GtAAACfAAAAAwLhMDmAYWMgVEG1U0FIGCBgXBXAtfMH10000EEEEEECUBYln03TTTdNBDZopopYvrTTdNa325mImNg3TTPV9q3pmY0xoO6bv3r00y+IDGid/9aaaZTGMuj9mpu9Mpio1dXrr5HERTZSmqU36A3CumzN/9Robv/Xx4v9ijkSRSNLQhAWumap82WRSBUqXStV/YcS+XVLnSS+WLDroqArFkMEsAS+eWmrUzrO0oEmE40RlMZ5+ODIkAyKAGUwZ3mVKmcamcJnMW26MRPgUw6j+LkhyHGVGYjSUUKNpuJUQoOIAyDvEyG8S5yfK6dhZc0Tx1KI/gviKL6qvvFs1+bWtaz58uUNnryq6kt5RzOCkPWlVqVX2a/EEBUdU1KrXLf40GoiiFXK///qpoiDXrOgqDR38JB0bw7SoL+ZB9o1RCkQjQ2CBYZKd/+VJxZRRZlqSkKiws0WFxUyCwsKiMy7hUVFhIaCrNQsKkTIsLivwKKigsj8XYlwt/WKi2N4d//uQRCSAAjURNIHpMZBGYiaQPSYyAAABLAAAAAAAACWAAAAApUF/Mg+0aohSIRobBAsMlO//Kk4soosy1JSFRYWaLC4qZBYWFRGZdwqKiwkNBVmoWFSJkWFxX4FFRQWR+LsS4W/rFRb/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////VEFHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAU291bmRib3kuZGUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMjAwNGh0dHA6Ly93d3cuc291bmRib3kuZGUAAAAAAAAAACU=");
+            // I think that url is just a tone and isn't getting anything from the web.
 
             var roomname = document.getElementById("roomname");
+            var pings = 0;
 
             /*var add = setInterval(function() {
                 // allow 1px inaccuracy by adding 1
@@ -137,16 +136,39 @@
                         url = "http://127.0.0.1:8080";
                     }
                 } ,1000);
+                setInterval(function(){
+                    updateRooms();
+                },5000);
              }
             var url = "http://205.206.37.44:8080";
             //var url = "http://192.168.0.100:8080";
             //var url = "http://127.0.0.1:8080";  // For local testing only.
             //var url  = "http://localhost:8080";
 
+            function updateRooms(){
+                var xhr = httpRequest('GET', url + "/?roomrequest=" + roomnum);
+                setTimeout(function(){
+                    rooms = JSON.parse(xhr.responseText);
+                    var texttosend = "";
+                    for(var i=0;i<rooms.length;i++){
+                        texttosend += '<button value="' + rooms[i].num + '" onclick="gotoroom(' + rooms[i].num + ')">' + rooms[i].name + ' (' + rooms[i].players + ')</button>';
+                    }
+                    roomdiv.innerHTML = texttosend;
+                },500);
+            }
+
+            function gotoroom(theroom){
+                var xhr = httpRequest('GET', url + "/?player=" + playernum + '&changeroom=' + theroom);
+                setTimeout(function(){
+                    updateRooms();
+                    //roomnum = theroom;
+                },500);
+            }
+
             function setup(){
                 var xhr = httpRequest('GET', url + "/setup");
                 console.log("setting up");
-                setTimeout(function(){ 
+                setTimeout(function(){
                     console.log(xhr.responseText);
                     var results = JSON.parse(xhr.responseText);
                     playernum =  results.player;
@@ -154,18 +176,29 @@
                     playername = "Player " + playernum;
                     document.getElementById("name").value = playername;
                 }, 500);
+                roomnum = 0;
+                updateRooms();
             }
 
             function pingserver(){
+                pings += 1;
+                //console.log(pings);
                 var xhr = httpRequest('GET', url + '/?ping=' + playernum);
-                setTimeout(function(){ 
-                    if(xhr.responseText == 'RESET' && playernum != null){
+                setTimeout(function(){
+                    if(xhr.responseText == 'RESET'){// && playernum != null){
+                        playernum = null;
                         setup();
                         return;
                     }
+                    if(xhr.responseText == ''){
+                        playernum = null;
+                        setup();
+                        return;
+                    }
+                    console.log(pings + " " + xhr.responseText);
                     var results = JSON.parse(xhr.responseText);
                     scorepar.innerHTML = '<br>';
-                    writeScore(results.p0,0);  // Figure out a way to change this to a for loop later. 
+                    writeScore(results.p0,0);  // Figure out a way to change this to a for loop later.
                     writeScore(results.p1,1);
                     writeScore(results.p2,2);
                     writeScore(results.p3,3);
@@ -182,7 +215,7 @@
 
             function updateChat(){
                 var xhr = httpRequest('GET', url + '/?chatupdate=' + playernum);
-                setTimeout(function(){ 
+                setTimeout(function(){
                     addToChat(xhr.responseText);
                     //console.log(xhr.responseText);
                 }, 500);
@@ -214,10 +247,10 @@
                     }
             }
 
-            var xhr = httpRequest('GET', url);
-            setTimeout(function(){ 
+            //var xhr = httpRequest('GET', url);
+            //setTimeout(function(){
                 //document.write(xhr.responseText);
-            }, 1000);
+            //}, 1000);
 
             function update(){
                 //Update everything in the game.
@@ -228,7 +261,7 @@
                             if(turnnotification.innerHTML != "YOUR TURN!!"){
                                 turnnotification.innerHTML = "YOUR TURN!!";
                                 title.innerHTML = "YOUR TURN!!";
-                                snd2.play();
+                                //snd2.play();
                             }
                             else{
                                 turnnotification.innerHTML = "     ";
@@ -251,8 +284,8 @@
                     setup();
                 }
                 else{
-                    xhr = httpRequest('GET', url + "/update");
-                    setTimeout(function(){ 
+                    xhr = httpRequest('GET', url + "/?update=" + playernum);
+                    setTimeout(function(){
                         infopar.innerHTML = xhr.responseText;
                         var results = JSON.parse(xhr.responseText);
                         dices[0].innerHTML = results.d1;
@@ -279,6 +312,9 @@
                         else{
                             rollallbutton.disabled = true;
                         }
+                        roomnum = results.room;
+                        roomname.innerHTML = rooms[roomnum].name;
+                        //roomname.innerHTML = rooms[results.room].name;
                     }, 500);
                 }
                 disableDices();
@@ -353,7 +389,7 @@
                 update();
             }
 
-            function disableDices(){ // Deciding weather or not to hide or disable the dice. 
+            function disableDices(){ // Deciding weather or not to hide or disable the dice.
                 for(var i=0;i<6;i++){
                     if(dices[i].innerHTML == "1" || dices[i].innerHTML == "5"){
                         dices[i].disabled = false;
