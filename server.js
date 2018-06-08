@@ -104,9 +104,10 @@ http.createServer(function (req, res) {
 		res.end('Game Reset');
 	}
 	else if(q.query.sendchat != null){ // It is a send chat request
+		var theroom = players[q.query.player].room;
 		if(q.query.sendchat != ""){
-			rooms[0].chats.push(players[q.query.player].name + ": " + q.query.sendchat);
-			console.log(rooms[0].chats[rooms[0].chats.length-1]);
+			rooms[theroom].chats.push(players[q.query.player].name + ": " + q.query.sendchat);
+			console.log(rooms[theroom].chats[rooms[theroom].chats.length-1]);
 		}
 		res.end('Chat send');
 	}
