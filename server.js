@@ -122,9 +122,11 @@ http.createServer(function (req, res) {
 	else if(q.query.changeroom != null){
 		console.log("Change Room Request");
 		if(players[q.query.player] != undefined){
+			rooms[players[q.query.player].room].chats.push(players[q.query.player].name + " has left " + rooms[players[q.query.player].room].name);
 			players[q.query.player].chat = rooms[q.query.changeroom].chats.length;
 			players[q.query.player].room = parseInt(q.query.changeroom);
 			players[q.query.player].score = rooms[q.query.changeroom].startscore;
+			rooms[q.query.changeroom].chats.push(players[q.query.player].name + " has joined " + rooms[q.query.changeroom].name);
 		}
 	}
 	else if(q.query.player != null){ // Then it is a attempt to play.
