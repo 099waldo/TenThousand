@@ -32,7 +32,7 @@ http.createServer(function (req, res) {
 
 	if(q.query.update != null){ // Then it is a game update request.  This function will require the number of the player that is requesting the data.
 		//console.log("Update Request  " + requests);
-		console.log(q.query.update);
+		//console.log(q.query.update);
 		var playerroom = players[q.query.update].room;
 		var gamevalues = '{"d1":"' + rooms[playerroom].dices[0] + '", "d2":"' + rooms[playerroom].dices[1] + '", "d3":"'+rooms[playerroom].dices[2]
          + '", "d4":"'+rooms[playerroom].dices[3] + '", "d5":"' + rooms[playerroom].dices[4] + '", "d6":"' + rooms[playerroom].dices[5] + '", "turn":"'
@@ -122,7 +122,8 @@ http.createServer(function (req, res) {
 		console.log("Change Room Request");
 		if(players[q.query.player] != undefined){
 			players[q.query.player].chat = rooms[q.query.changeroom].chats.length;
-			players[q.query.player].room = q.query.changeroom;
+			players[q.query.player].room = parseInt(q.query.changeroom);
+			players[q.query.player].score = rooms[q.query.changeroom].startscore;
 		}
 	}
 	else if(q.query.player != null){ // Then it is a attempt to play.
@@ -172,9 +173,10 @@ http.createServer(function (req, res) {
 	}
 	if(players.length > 0){
 		for(var i=0;i<rooms.length;i++){
-			if(i==0){
+			/*if(i==0){
 				fixturns(i);
-			}
+			}*/
+			fixturns(i);
 			if(players[rooms[i].turn] != null){
 				if(players[rooms[i].turn].score < 999){
 					if(rooms[i].score > 999){
@@ -382,11 +384,12 @@ function play(player, button){ // Line 30 shows all the button codes
 	}
 	if(button == 9){
 		// Take it
-		if(players[rooms[players[player].room].turn].score == 0){
-			if(rooms[players[player].room].score > 999){
+		if(players[rooms[players[player].room].turn].score == 0){ // If the player's score is 0
+			if(rooms[players[player].room].score > 999){ // If the room score is greater than 999
 				players[player].score += rooms[players[player].room].score;
 				rooms[players[player].room].turn += 1;
 				rooms[players[player].room].allowroll = true;
+				fixturns(players[player].room);
 				if(players[rooms[players[player].room].turn] != undefined){
 					if(players[rooms[players[player].room].turn].score < 999){
 						rooms[players[player].room].score = 0;
@@ -401,7 +404,7 @@ function play(player, button){ // Line 30 shows all the button codes
 							if(players[i].score < 999){
 								rooms[players[player].room].score = 0;
 								for(var i=0;i<6;i++){
-									rooms[players[player].room].dices[i] = 0;
+									rooms[players[player].room].dices[i] = 0; // Reset all the dices.
 								}
 							}
 						}
@@ -409,10 +412,11 @@ function play(player, button){ // Line 30 shows all the button codes
 				}
 			}
 		}
-		else{
+		else{ // If the players score is greater than 0
 			players[player].score += rooms[players[player].room].score;
 			rooms[players[player].room].turn += 1;
 			rooms[players[player].room].allowroll = true;
+			fixturns(players[player].room);
 			if(players[rooms[players[player].room].turn] != undefined){
 				if(players[rooms[players[player].room].turn].score < 999){
 					rooms[players[player].room].score = 0;
@@ -434,7 +438,7 @@ function play(player, button){ // Line 30 shows all the button codes
 				}
 			}
 			fixturns(players[player].room);
-			console.log(players[rooms[players[player].room].turn]);
+			//console.log(players[rooms[players[player].room].turn]);
 			if(players[rooms[players[player].room].turn] != undefined){
 				if(players[rooms[players[player].room].turn].score > 999){
 					rooms[players[player].room].showrollallbutton = true;
@@ -445,31 +449,53 @@ function play(player, button){ // Line 30 shows all the button codes
 			}
 		}
 		rooms[players[player].room].showtakebutton = false;
+		//rooms[players[player].room].turn += 1;
 	}
 }
 
 function fixturns(theroom){ // If the current player doens't exist then go to the next player that does exist and is in the right room. 
-	while(players[rooms[theroom].turn] == undefined){
-		if(players[rooms[theroom].turn] == undefined){
-			rooms[theroom].turn += 1;
-		}
-		if(rooms[theroom].turn+1 > players.length){
-			rooms[theroom].turn = 0;
-		}
+	//console.log("Players in" + theroom + " room " + playersinroom(theroom));
+	if(players[rooms[theroom].turn] == undefined){
+		rooms[theroom].turn += 1;
 	}
-	var anyplayersinroom = false;
-	if(players.length > 0){
+	if(rooms[theroom].turn > largestplayerinroom(theroom)){
+		var nextroom = null;
 		for(var i=0;i<players.length;i++){
 			if(players[i] != undefined){
 				if(players[i].room == theroom){
-					anyplayersinroom=true;
+					nextroom = i;
+					break;
 				}
 			}
 		}
+		rooms[theroom].turn = nextroom;
 	}
-	if(players[rooms[theroom].turn].room != theroom && anyplayersinroom == true){ // If the player that you found is not in the right room then try again.
-		fixturns(theroom);
+	//console.log(rooms[1].turn);
+}
+
+function largestplayerinroom(theroom){
+	var pir = 0;
+	for(var i=0;i<players.length;i++){
+		if(players[i] != undefined){
+			if(i > pir){
+				pir = i;
+			}
+		}
 	}
+	return pir;
+}
+
+
+function playersinroom(theroom){
+	var pir = 0;
+	for(var i=0;i<players.length;i++){
+		if(players[i] != undefined){
+			if(players[i].room == theroom){
+				pir += 1;
+			}
+		}
+	}
+	return pir;
 }
 
 function rolldice(){
@@ -543,7 +569,7 @@ function allDicesDisabled(theroom){
 
 function checkThreeOfAKind(theroom){
 		// Check if there is 3 of a kind of something
-		console.log("the room:" + theroom.dices[6]);
+		//console.log("the room:" + theroom.dices[6]);
 		theroom.dices[6] = 0;
 		theroom.dices[7] = 0;
 	
