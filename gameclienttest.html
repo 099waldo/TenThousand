@@ -147,14 +147,16 @@
 
             function updateRooms(){
                 var xhr = httpRequest('GET', url + "/?roomrequest=" + roomnum);
-                setTimeout(function(){
-                    rooms = JSON.parse(xhr.responseText);
-                    var texttosend = "";
-                    for(var i=0;i<rooms.length;i++){
-                        texttosend += '<button value="' + rooms[i].num + '" onclick="gotoroom(' + rooms[i].num + ')">' + rooms[i].name + ' (' + rooms[i].players + ')</button>';
+                    xhr.onreadystatechange = function(){
+                        if(this.readyState == 4 && this.status == 200){
+                        rooms = JSON.parse(xhr.responseText);
+                        var texttosend = "";
+                        for(var i=0;i<rooms.length;i++){
+                            texttosend += '<button value="' + rooms[i].num + '" onclick="gotoroom(' + rooms[i].num + ')">' + rooms[i].name + ' (' + rooms[i].players + ')</button>';
+                        }
+                        roomdiv.innerHTML = texttosend;
                     }
-                    roomdiv.innerHTML = texttosend;
-                },500);
+                }
             }
 
             function gotoroom(theroom){
@@ -162,20 +164,22 @@
                 setTimeout(function(){
                     updateRooms();
                     //roomnum = theroom;
-                },500);
+                },1000);
             }
 
             function setup(){
                 var xhr = httpRequest('GET', url + "/setup");
                 console.log("setting up");
-                setTimeout(function(){ 
-                    console.log(xhr.responseText);
-                    var results = JSON.parse(xhr.responseText);
-                    playernum =  results.player;
-                    console.log("Player " + playernum);
-                    playername = "Player " + playernum;
-                    document.getElementById("name").value = playername;
-                }, 500);
+                xhr.onreadystatechange = function(){
+                    if(this.readyState == 4 && this.status == 200){
+                        console.log(xhr.responseText);
+                        var results = JSON.parse(xhr.responseText);
+                        playernum =  results.player;
+                        console.log("Player " + playernum);
+                        playername = "Player " + playernum;
+                        document.getElementById("name").value = playername;
+                    }
+                }
                 roomnum = 0;
                 updateRooms();
             }
@@ -184,29 +188,31 @@
                 pings += 1;
                 //console.log(pings);
                 var xhr = httpRequest('GET', url + '/?ping=' + playernum);
-                setTimeout(function(){ 
-                    if(xhr.responseText == 'RESET'){// && playernum != null){
-                        playernum = null;
-                        setup();
-                        return;
+                xhr.onreadystatechange = function(){
+                    if(this.readyState == 4 && this.status == 200){
+                        if(xhr.responseText == 'RESET'){// && playernum != null){
+                            playernum = null;
+                            setup();
+                            return;
+                        }
+                        if(xhr.responseText == ''){
+                            playernum = null;
+                            setup();
+                            return;
+                        }
+                        console.log(pings + " " + xhr.responseText);
+                        var results = JSON.parse(xhr.responseText);
+                        scorepar.innerHTML = '<br>';
+                        writeScore(results.p0,0);  // Figure out a way to change this to a for loop later. 
+                        writeScore(results.p1,1);
+                        writeScore(results.p2,2);
+                        writeScore(results.p3,3);
+                        writeScore(results.p4,4);
+                        writeScore(results.p5,5);
+                        writeScore(results.p6,6);
+                        disableDices();
                     }
-                    if(xhr.responseText == ''){
-                        playernum = null;
-                        setup();
-                        return;
-                    }
-                    console.log(pings + " " + xhr.responseText);
-                    var results = JSON.parse(xhr.responseText);
-                    scorepar.innerHTML = '<br>';
-                    writeScore(results.p0,0);  // Figure out a way to change this to a for loop later. 
-                    writeScore(results.p1,1);
-                    writeScore(results.p2,2);
-                    writeScore(results.p3,3);
-                    writeScore(results.p4,4);
-                    writeScore(results.p5,5);
-                    writeScore(results.p6,6);
-                    disableDices();
-                }, 500);
+                }
             }
 
             function changeName(){
@@ -215,10 +221,11 @@
 
             function updateChat(){
                 var xhr = httpRequest('GET', url + '/?chatupdate=' + playernum);
-                setTimeout(function(){ 
-                    addToChat(xhr.responseText);
-                    //console.log(xhr.responseText);
-                }, 500);
+                xhr.onreadystatechange = function(){ 
+                    if(this.readyState == 4 && this.status == 200){
+                        addToChat(xhr.responseText);
+                    }
+                }
             }
 
             function sendChat(){
@@ -248,9 +255,16 @@
             }
 
             //var xhr = httpRequest('GET', url);
-            //setTimeout(function(){ 
+            //setTimeout(function(){                    // OUTDATED use code sample below.
                 //document.write(xhr.responseText);
             //}, 1000);
+
+            // var xhr = httpRequest('GET', url);
+            // xhr.onreadystatechange = function(){
+                // if(this.readyState == 4 && this.status == 200){
+                    //DO Stuff
+                // }
+            // }
 
             function update(){
                 //Update everything in the game.
@@ -261,7 +275,7 @@
                             if(turnnotification.innerHTML != "YOUR TURN!!"){
                                 turnnotification.innerHTML = "YOUR TURN!!";
                                 title.innerHTML = "YOUR TURN!!";
-                                //snd2.play();
+                                snd2.play();
                             }
                             else{
                                 turnnotification.innerHTML = "     ";
@@ -285,37 +299,39 @@
                 }
                 else{
                     xhr = httpRequest('GET', url + "/?update=" + playernum);
-                    setTimeout(function(){ 
-                        infopar.innerHTML = xhr.responseText;
-                        var results = JSON.parse(xhr.responseText);
-                        dices[0].innerHTML = results.d1;
-                        dices[1].innerHTML = results.d2;
-                        dices[2].innerHTML = results.d3;
-                        dices[3].innerHTML = results.d4;
-                        dices[4].innerHTML = results.d5;
-                        dices[5].innerHTML = results.d6;
-                        bigdice1.innerHTML = results.bd1;
-                        bigdice2.innerHTML = results.bd2;
-                        turn = results.turn;
-                        score = results.score;
-                        infopar.innerHTML = 'Score: ' + score;
-                        if(results.takebutton == "true"){
-                            takeitbutton.disabled = false;
-                        }
-                        else{
-                            takeitbutton.disabled = true;
-                        }
+                    xhr.onreadystatechange = function(){
+                        if(this.readyState == 4 && this.status == 200){
+                            infopar.innerHTML = xhr.responseText;
+                            var results = JSON.parse(xhr.responseText);
+                            dices[0].innerHTML = results.d1;
+                            dices[1].innerHTML = results.d2;
+                            dices[2].innerHTML = results.d3;
+                            dices[3].innerHTML = results.d4;
+                            dices[4].innerHTML = results.d5;
+                            dices[5].innerHTML = results.d6;
+                            bigdice1.innerHTML = results.bd1;
+                            bigdice2.innerHTML = results.bd2;
+                            turn = results.turn;
+                            score = results.score;
+                            infopar.innerHTML = 'Score: ' + score;
+                            if(results.takebutton == "true"){
+                                takeitbutton.disabled = false;
+                         }
+                            else{
+                                takeitbutton.disabled = true;
+                            }
 
-                        if(results.rollallbutton == "true"){
-                            rollallbutton.disabled = false;
+                            if(results.rollallbutton == "true"){
+                                rollallbutton.disabled = false;
+                            }
+                            else{
+                                rollallbutton.disabled = true;
+                            }
+                            roomnum = results.room;
+                            roomname.innerHTML = rooms[roomnum].name;
+                            //roomname.innerHTML = rooms[results.room].name;
                         }
-                        else{
-                            rollallbutton.disabled = true;
-                        }
-                        roomnum = results.room;
-                        roomname.innerHTML = rooms[roomnum].name;
-                        //roomname.innerHTML = rooms[results.room].name;
-                    }, 500);
+                    }
                 }
                 disableDices();
             }
