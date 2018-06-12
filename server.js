@@ -33,13 +33,15 @@ http.createServer(function (req, res) {
 	if(q.query.update != null){ // Then it is a game update request.  This function will require the number of the player that is requesting the data.
 		//console.log("Update Request  " + requests);
 		//console.log(q.query.update);
-		var playerroom = players[q.query.update].room;
-		var gamevalues = '{"d1":"' + rooms[playerroom].dices[0] + '", "d2":"' + rooms[playerroom].dices[1] + '", "d3":"'+rooms[playerroom].dices[2]
-         + '", "d4":"'+rooms[playerroom].dices[3] + '", "d5":"' + rooms[playerroom].dices[4] + '", "d6":"' + rooms[playerroom].dices[5] + '", "turn":"'
-		  + rooms[playerroom].turn + '", "bd1":"' + rooms[playerroom].dices[6] + '", "bd2":"' + rooms[playerroom].dices[7] + '", "score":"' + rooms[playerroom].score + '", "takebutton":"'
-		   + rooms[playerroom].showtakebutton + '", "rollallbutton":"' + rooms[playerroom].showrollallbutton + '", "room":"' + playerroom + '"}';
-		// Servers must return text in JSON format. eg. '{ "name":"John", "age":31, "city":"New York" }'
-		res.end(gamevalues);
+		if(players[q.query.update] != undefined){
+			var playerroom = players[q.query.update].room;
+			var gamevalues = '{"d1":"' + rooms[playerroom].dices[0] + '", "d2":"' + rooms[playerroom].dices[1] + '", "d3":"'+rooms[playerroom].dices[2]
+        	+ '", "d4":"'+rooms[playerroom].dices[3] + '", "d5":"' + rooms[playerroom].dices[4] + '", "d6":"' + rooms[playerroom].dices[5] + '", "turn":"'
+		  	+ rooms[playerroom].turn + '", "bd1":"' + rooms[playerroom].dices[6] + '", "bd2":"' + rooms[playerroom].dices[7] + '", "score":"' + rooms[playerroom].score + '", 	"takebutton":"'
+			   + rooms[playerroom].showtakebutton + '", "rollallbutton":"' + rooms[playerroom].showrollallbutton + '", "room":"' + playerroom + '"}';
+			// Servers must return text in JSON format. eg. '{ "name":"John", "age":31, "city":"New York" }'
+			res.end(gamevalues);
+		}
 	}
 	else if(q.path == '/setup'){ // Setup the player to start playing.
 		console.log("Setup Request  " + requests);
