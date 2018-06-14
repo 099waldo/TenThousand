@@ -2,7 +2,7 @@ var http = require('http');
 var url = require('url');
 var requests = 0;
 
-var rooms = [{name:"Lobby",turn:0,num:0,score:0,dices:[0,0,0,0,0,0,0,0],bigdicenumber1:0,bigdicebasenumber1:0,bigdicenumber2:0,bigdicebasenumber2:0,showtakebutton:false,showrollallbutton:false,allowroll:true,chats:[],startscore:1000,players:0},{name:"Room #1",turn:0,num:1,score:0,dices:[0,0,0,0,0,0,0,0],bigdicenumber1:0,bigdicebasenumber1:0,bigdicenumber2:0,bigdicebasenumber2:0,showtakebutton:false,showrollallbutton:false,allowroll:true,chats:[],startscore:1000,players:0}];
+var rooms = [{name:"Lobby",turn:0,num:0,score:0,dices:[0,0,0,0,0,0,0,0],bigdicenumber1:0,bigdicebasenumber1:0,bigdicenumber2:0,bigdicebasenumber2:0,showtakebutton:false,showrollallbutton:false,allowroll:true,chats:[],startscore:0,players:0},{name:"Room #1",turn:0,num:1,score:0,dices:[0,0,0,0,0,0,0,0],bigdicenumber1:0,bigdicebasenumber1:0,bigdicenumber2:0,bigdicebasenumber2:0,showtakebutton:false,showrollallbutton:false,allowroll:true,chats:[],startscore:0,players:0}];
 
 var players = [];
 
@@ -202,7 +202,7 @@ http.createServer(function (req, res) {
 			rooms[players[i].room].players += 1;
 		}
 	}
-	res.end("Something is broken :(");
+	res.end("Something is broken please reload the page.");
 }).listen(8080);
 
 
@@ -475,7 +475,18 @@ function fixturns(theroom){ // If the current player doens't exist then go to th
 		}
 		rooms[theroom].turn = nextroom;
 	}
-	//console.log(rooms[1].turn);
+	if(playersinroom(theroom) == 1){ // If there is only one player in the room, find him and set him as the turn. UNTESTED.
+		var nextroom = null;
+		for(var i=0;i<players.length;i++){
+			if(players[i] != undefined){
+				if(players[i].room == theroom){
+					nextroom = i;
+					break;
+				}
+			}
+		}
+		rooms[theroom].turn = nextroom;
+	}
 }
 
 function largestplayerinroom(theroom){

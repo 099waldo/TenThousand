@@ -247,11 +247,11 @@
 
             function writeScore(result, num){
                 if(result != undefined){
-                        if(turn == num){
-                            scorepar.innerHTML += '* ';
-                        }
-                        scorepar.innerHTML += result + '<br>';
+                    if(turn == num){
+                        scorepar.innerHTML += '* ';
                     }
+                    scorepar.innerHTML += result + '<br>';
+                }
             }
 
             //var xhr = httpRequest('GET', url);
@@ -275,7 +275,7 @@
                             if(turnnotification.innerHTML != "YOUR TURN!!"){
                                 turnnotification.innerHTML = "YOUR TURN!!";
                                 title.innerHTML = "YOUR TURN!!";
-                                snd2.play();
+                                //snd2.play();
                             }
                             else{
                                 turnnotification.innerHTML = "     ";
