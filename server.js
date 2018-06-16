@@ -2,7 +2,7 @@ var http = require('http');
 var url = require('url');
 var requests = 0;
 
-var rooms = [{name:"Lobby",turn:0,num:0,score:0,dices:[0,0,0,0,0,0,0,0],bigdicenumber1:0,bigdicebasenumber1:0,bigdicenumber2:0,bigdicebasenumber2:0,showtakebutton:false,showrollallbutton:false,allowroll:true,chats:[],startscore:0,players:0},{name:"Room #1",turn:0,num:1,score:0,dices:[0,0,0,0,0,0,0,0],bigdicenumber1:0,bigdicebasenumber1:0,bigdicenumber2:0,bigdicebasenumber2:0,showtakebutton:false,showrollallbutton:false,allowroll:true,chats:[],startscore:0,players:0}];
+var rooms = [{name:"Room #1",turn:0,num:0,score:0,dices:[0,0,0,0,0,0,0,0],bigdicenumber1:0,bigdicebasenumber1:0,bigdicenumber2:0,bigdicebasenumber2:0,showtakebutton:false,showrollallbutton:false,allowroll:true,chats:[],startscore:0,players:0,showrestart:false},{name:"Room #2",turn:0,num:1,score:0,dices:[0,0,0,0,0,0,0,0],bigdicenumber1:0,bigdicebasenumber1:0,bigdicenumber2:0,bigdicebasenumber2:0,showtakebutton:false,showrollallbutton:false,allowroll:true,chats:[],startscore:0,players:0,showrestart:false}];
 
 var players = [];
 
@@ -84,17 +84,17 @@ http.createServer(function (req, res) {
 			}
 		}
 	}
-	else if(q.query.sendchat == "/restart"){
-		chats.push('The Game has been restarted.');
+	else if(q.query.restart != null){
+		rooms[q.query.restart].chats.push('The Game has been restarted.');
 		console.log("Game Reset");
-		var roomreset = 0; // For now this only resets the lobby
-		for(var i=0;i<6;i++){
+		var roomreset = q.query.restart;
+		for(var i=0;i<rooms[roomreset].dices.length;i++){
 			rooms[roomreset].dices[i] = 0;
 		}
 		for(var i=0;i<players.length;i++){
 			if(players[i] != null){
 				if(players[i].room == roomreset){
-					players[i].score = 0;
+					players[i].score = rooms[roomreset].startscore;
 				}
 			}
 		}
@@ -182,7 +182,7 @@ http.createServer(function (req, res) {
 				fixturns(i);
 			}*/
 			fixturns(i);
-			if(players[rooms[i].turn] != null){
+			if(players[rooms[i].turn] != null){ // Show or hide the take button.
 				if(players[rooms[i].turn].score < 999){
 					if(rooms[i].score > 999){
 						rooms[i].showtakebutton = true;
@@ -202,6 +202,7 @@ http.createServer(function (req, res) {
 			rooms[players[i].room].players += 1;
 		}
 	}
+	showrestartbuttons();
 	res.end("Something is broken please reload the page.");
 }).listen(8080);
 
@@ -354,7 +355,7 @@ function play(player, button){ // Line 30 shows all the button codes
 		rooms[players[player].room].score += rooms[players[player].room].dices[6];
 		rooms[players[player].room].dices[6] = 0;
 		var numbertaken = 0;
-		for(var i=0;i<6;i++){
+		for(var i=0;i<6;i++){ // Hide all the dice that make up the big dice.
 			if(rooms[players[player].room].dices[i] == rooms[players[player].room].bigdicebasenumber1 && numbertaken != rooms[players[player].room].bigdicenumber1){
 				rooms[players[player].room].dices[i] = -1;
 				numbertaken += 1;
@@ -367,6 +368,11 @@ function play(player, button){ // Line 30 shows all the button codes
 		}
 		rooms[players[player].room].allowroll = true;
 		checkThreeOfAKind(rooms[players[player].room]);
+		if(rooms[players[player].room].dices[6] == 500){
+			for(var i=0;i<rooms[players[player].room].dices.length;i++){
+				rooms[players[player].room].dices[i] = 0;
+			}
+		}
 	}
 	if(button == 8){
 		// Take big dice 2
@@ -514,6 +520,27 @@ function playersinroom(theroom){
 	return pir;
 }
 
+function showrestartbuttons(){
+	//console.log(rooms);
+	for(var i=0;i<rooms.length;i++){ // Check if the restart button should be shown. 
+		var srestart = false;
+		for(var u=0;u<players.length;u++){ // For each room check each player and if they have 10,000 then show restart in that room.
+			if(players[u] != undefined){
+				if(players[u].room == i){
+					//console.log(players[u].score);
+					if(players[u].score == 10000){
+						srestart = true;
+					}
+				}
+			}
+		}
+		if(rooms[i] != undefined){ // Room 0 is somehow equal to undefined??
+			rooms[i].showrestart = srestart;
+			//console.log("SR: " + srestart + " Show Restart: " + rooms[i].showrestart + " Room: " + i);
+		}
+	}
+}
+
 function rolldice(){
     var num1 = Math.round(Math.random()*10);
     while(num1 > 6 || num1 == 0){
@@ -531,7 +558,7 @@ function roll(theroom){
 
     for(var i=0;i<6;i++){ // Roll the available dice. 
         if(rooms[theroom].dices[i] != -1){
-            rooms[theroom].dices[i] = rolldice();
+			rooms[theroom].dices[i] = rolldice();
         }
 	}
 

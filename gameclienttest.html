@@ -21,7 +21,8 @@
             <button onclick="dice6()" id = "dice6" class="dice">0</button><br>
             <button onclick="bigDice1()" id="bigdice1" class="dice">0</button>
             <button onclick="bigDice2()" id="bigdice2" class="dice">0</button><br><br>
-            <button onclick="takeit()" id="takeitbutton"  class="rollbutton">Take it</button>
+            <button onclick="takeit()" id="takeitbutton"  class="rollbutton">Take it</button><br><br>
+            <button onclick="restart()" id="restartbutton" class="restartbutton">Restart Game</button>
             <p id ="infopar"></p>
             <p id="turnnotification" style="color: red"></p>
             <p id="scorepar"></p>
@@ -90,6 +91,7 @@
 
             var roomname = document.getElementById("roomname");
             var pings = 0;
+            var restartbutton = document.getElementById("restartbutton");
 
             /*var add = setInterval(function() {
                 // allow 1px inaccuracy by adding 1
@@ -147,14 +149,18 @@
 
             function updateRooms(){
                 var xhr = httpRequest('GET', url + "/?roomrequest=" + roomnum);
-                    xhr.onreadystatechange = function(){
-                        if(this.readyState == 4 && this.status == 200){
+                xhr.onreadystatechange = function(){
+                    if(this.readyState == 4 && this.status == 200){
                         rooms = JSON.parse(xhr.responseText);
                         var texttosend = "";
                         for(var i=0;i<rooms.length;i++){
                             texttosend += '<button value="' + rooms[i].num + '" onclick="gotoroom(' + rooms[i].num + ')">' + rooms[i].name + ' (' + rooms[i].players + ')</button>';
                         }
                         roomdiv.innerHTML = texttosend;
+                        if(rooms != undefined && roomnum != null){
+                            restartbutton.hidden = !rooms[roomnum].showrestart; // Show/Hide the restart game button. 
+                            console.log(xhr.responseText);
+                        }
                     }
                 }
             }
@@ -254,6 +260,11 @@
                 }
             }
 
+            function restart(){
+                var xhr = httpRequest('GET', url + "/?restart=" + roomnum);
+                update();
+            }
+
             //var xhr = httpRequest('GET', url);
             //setTimeout(function(){                    // OUTDATED use code sample below.
                 //document.write(xhr.responseText);
@@ -281,7 +292,7 @@
                                 turnnotification.innerHTML = "     ";
                                 title.innerHTML = "Ten Thousand";
                             }
-                        }, 250);
+                        }, 500);
                         turnNotIntervalGoing = true;
                     }
                     else{
