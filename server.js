@@ -2,7 +2,7 @@ var http = require('http');
 var url = require('url');
 var requests = 0;
 
-var rooms = [{name:"Room #1",turn:0,num:0,score:0,dices:[0,0,0,0,0,0,0,0],bigdicenumber1:0,bigdicebasenumber1:0,bigdicenumber2:0,bigdicebasenumber2:0,showtakebutton:false,showrollallbutton:false,allowroll:true,chats:[],startscore:0,players:0,showrestart:false},{name:"Room #2",turn:0,num:1,score:0,dices:[0,0,0,0,0,0,0,0],bigdicenumber1:0,bigdicebasenumber1:0,bigdicenumber2:0,bigdicebasenumber2:0,showtakebutton:false,showrollallbutton:false,allowroll:true,chats:[],startscore:0,players:0,showrestart:false}];
+var rooms = [{name:"Room #1",turn:0,num:0,score:0,dices:[0,0,0,0,0,0,0,0],bigdicenumber1:0,bigdicebasenumber1:0,bigdicenumber2:0,bigdicebasenumber2:0,showtakebutton:false,showrollallbutton:false,allowroll:true,chats:[],startscore:9900,players:0,showrestart:false},{name:"Room #2",turn:0,num:1,score:0,dices:[0,0,0,0,0,0,0,0],bigdicenumber1:0,bigdicebasenumber1:0,bigdicenumber2:0,bigdicebasenumber2:0,showtakebutton:false,showrollallbutton:false,allowroll:true,chats:[],startscore:0,players:0,showrestart:false}];
 
 var players = [];
 
@@ -197,9 +197,21 @@ http.createServer(function (req, res) {
 	for(var i=0;i<rooms.length;i++){  // Reset the amount of players in each room.
 		rooms[i].players = 0;
 	}
-	for(var i=0;i<players.length;i++){  // Set the amount of players in each room.
+	for(var i=0;i<players.length;i++){  // Set the amount of players in each room and check to make sure they aren't over 10,000.
 		if(players[i] != undefined){
 			rooms[players[i].room].players += 1;
+		}
+		if(players[i] != undefined){
+			if(players[i].score > 10000){
+				players[i].score = rooms[players[i].room].startscore;
+				rooms[players[i].room].turn += 1; // Change to next turn
+				rooms[players[i].room].score = 0; // Reset the room score. 
+				for(var u=0;u<rooms[players[i].room].dices.length;u++){  // Reset all the dice. 
+					if(players[i] != undefined){
+						rooms[players[i].room].dices[u] = 0;
+					}
+				} 
+			}
 		}
 	}
 	showrestartbuttons();
