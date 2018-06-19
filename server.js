@@ -88,7 +88,9 @@ http.createServer(function (req, res) {
 		rooms[q.query.restart].chats.push('The Game has been restarted.');
 		console.log("Game Reset");
 		var roomreset = q.query.restart;
-		resetdice(roomreset);
+		for(var i=0;i<rooms[roomreset].dices.length;i++){
+			rooms[roomreset].dices[i] = 0;
+		}
 		for(var i=0;i<players.length;i++){
 			if(players[i] != null){
 				if(players[i].room == roomreset){
@@ -204,7 +206,11 @@ http.createServer(function (req, res) {
 				players[i].score = rooms[players[i].room].startscore;
 				rooms[players[i].room].turn += 1; // Change to next turn
 				rooms[players[i].room].score = 0; // Reset the room score. 
-				resetdice(players[i].room);
+				for(var u=0;u<rooms[players[i].room].dices.length;u++){  // Reset all the dice. 
+					if(players[i] != undefined){
+						rooms[players[i].room].dices[u] = 0;
+					}
+				} 
 			}
 		}
 	}
@@ -226,27 +232,135 @@ function play(player, button){ // Line 30 shows all the button codes
 	}
 	if(button == 1){
         // Take dice 1
-        pressbutton(player, button);
+        var r = button-1;;
+		if(rooms[players[player].room].dices[r] == 1){
+            rooms[players[player].room].score += 100;
+			rooms[players[player].room].dices[r] = -1;
+			if(players[rooms[players[player].room].turn].score > 999){
+				rooms[players[player].room].showtakebutton = true;
+			}
+			rooms[players[player].room].allowroll = true;
+			checkThreeOfAKind(rooms[players[player].room]);
+        }
+        if(rooms[players[player].room].dices[r] == 5){
+            rooms[players[player].room].score += 50;
+			rooms[players[player].room].dices[r] = -1;
+			if(players[rooms[players[player].room].turn].score > 999){
+				rooms[players[player].room].showtakebutton = true;
+			}
+			rooms[players[player].room].allowroll = true;
+			checkThreeOfAKind(rooms[players[player].room]);
+		}
     }
 	if(button == 2){
 		// Take dice 2
-		pressbutton(player, button);
+		var r = button-1;;
+		if(rooms[players[player].room].dices[r] == 1){
+            rooms[players[player].room].score += 100;
+			rooms[players[player].room].dices[r] = -1;
+			if(players[rooms[players[player].room].turn].score > 999){
+				rooms[players[player].room].showtakebutton = true;
+			}
+			rooms[players[player].room].allowroll = true;
+			checkThreeOfAKind(rooms[players[player].room]);
+        }
+        if(rooms[players[player].room].dices[r] == 5){
+            rooms[players[player].room].score += 50;
+			rooms[players[player].room].dices[r] = -1;
+			if(players[rooms[players[player].room].turn].score > 999){
+				rooms[players[player].room].showtakebutton = true;
+			}
+			rooms[players[player].room].allowroll = true;
+			checkThreeOfAKind(rooms[players[player].room]);
+		}
 	}
 	if(button == 3){
 		// Take dice 3
-		pressbutton(player, button);
+		var r = button-1;;
+		if(rooms[players[player].room].dices[r] == 1){
+            rooms[players[player].room].score += 100;
+			rooms[players[player].room].dices[r] = -1;
+			if(players[rooms[players[player].room].turn].score > 999){
+				rooms[players[player].room].showtakebutton = true;
+			}
+			rooms[players[player].room].allowroll = true;
+			checkThreeOfAKind(rooms[players[player].room]);
+        }
+        if(rooms[players[player].room].dices[r] == 5){
+            rooms[players[player].room].score += 50;
+			rooms[players[player].room].dices[r] = -1;
+			if(players[rooms[players[player].room].turn].score > 999){
+				rooms[players[player].room].showtakebutton = true;
+			}
+			rooms[players[player].room].allowroll = true;
+			checkThreeOfAKind(rooms[players[player].room]);
+        }
 	}
 	if(button == 4){
 		// Take dice 4
-		pressbutton(player, button);
+		var r = button-1;;
+		if(rooms[players[player].room].dices[r] == 1){
+            rooms[players[player].room].score += 100;
+			rooms[players[player].room].dices[r] = -1;
+			if(players[rooms[players[player].room].turn].score > 999){
+				rooms[players[player].room].showtakebutton = true;
+			}
+			rooms[players[player].room].allowroll = true;
+			checkThreeOfAKind(rooms[players[player].room]);
+        }
+        if(rooms[players[player].room].dices[r] == 5){
+            rooms[players[player].room].score += 50;
+			rooms[players[player].room].dices[r] = -1;
+			if(players[rooms[players[player].room].turn].score > 999){
+				rooms[players[player].room].showtakebutton = true;
+			}
+			rooms[players[player].room].allowroll = true;
+			checkThreeOfAKind(rooms[players[player].room]);
+        }
 	}
 	if(button == 5){
 		// Take dice 5
-		pressbutton(player, button);
+		var r = button-1;;
+		if(rooms[players[player].room].dices[r] == 1){
+            rooms[players[player].room].score += 100;
+			rooms[players[player].room].dices[r] = -1;
+			if(players[rooms[players[player].room].turn].score > 999){
+				rooms[players[player].room].showtakebutton = true;
+			}
+			rooms[players[player].room].allowroll = true;
+			checkThreeOfAKind(rooms[players[player].room]);
+        }
+        if(rooms[players[player].room].dices[r] == 5){
+            rooms[players[player].room].score += 50;
+			rooms[players[player].room].dices[r] = -1;
+			if(players[rooms[players[player].room].turn].score > 999){
+				rooms[players[player].room].showtakebutton = true;
+			}
+			rooms[players[player].room].allowroll = true;
+			checkThreeOfAKind(rooms[players[player].room]);
+        }
 	}
 	if(button == 6){
 		// Take dice 6
-		pressbutton(player, button);
+		var r = button-1;
+		if(rooms[players[player].room].dices[r] == 1){
+            rooms[players[player].room].score += 100;
+			rooms[players[player].room].dices[r] = -1;
+			if(players[rooms[players[player].room].turn].score > 999){
+				rooms[players[player].room].showtakebutton = true;
+			}
+			rooms[players[player].room].allowroll = true;
+			checkThreeOfAKind(rooms[players[player].room]);
+        }
+        if(rooms[players[player].room].dices[r] == 5){
+            rooms[players[player].room].score += 50;
+			rooms[players[player].room].dices[r] = -1;
+			if(players[rooms[players[player].room].turn].score > 999){
+				rooms[players[player].room].showtakebutton = true;
+			}
+			rooms[players[player].room].allowroll = true;
+			checkThreeOfAKind(rooms[players[player].room]);
+        }
 	}
 	if(button == 7){
 		// Take big dice 1
@@ -267,7 +381,9 @@ function play(player, button){ // Line 30 shows all the button codes
 		rooms[players[player].room].allowroll = true;
 		checkThreeOfAKind(rooms[players[player].room]);
 		if(rooms[players[player].room].dices[6] == 500){
-			resetdice(players[player].room);
+			for(var i=0;i<rooms[players[player].room].dices.length;i++){
+				rooms[players[player].room].dices[i] = 0;
+			}
 		}
 	}
 	if(button == 8){
@@ -300,7 +416,9 @@ function play(player, button){ // Line 30 shows all the button codes
 				if(players[rooms[players[player].room].turn] != undefined){
 					if(players[rooms[players[player].room].turn].score < 999){
 						rooms[players[player].room].score = 0;
-						resetdice(players[player].room);
+						for(var i=0;i<6;i++){
+							rooms[players[player].room].dices[i] = 0;
+						}
 					}
 				}
 				else{
@@ -308,7 +426,9 @@ function play(player, button){ // Line 30 shows all the button codes
 						if(players[i] != undefined){
 							if(players[i].score < 999){
 								rooms[players[player].room].score = 0;
-								resetdice(plaayers[player].room);
+								for(var i=0;i<6;i++){
+									rooms[players[player].room].dices[i] = 0; // Reset all the dices.
+								}
 							}
 						}
 					}
@@ -323,7 +443,9 @@ function play(player, button){ // Line 30 shows all the button codes
 			if(players[rooms[players[player].room].turn] != undefined){
 				if(players[rooms[players[player].room].turn].score < 999){
 					rooms[players[player].room].score = 0;
-					resetdice(players[player].room);
+					for(var i=0;i<6;i++){
+						rooms[players[player].room].dices[i] = 0;
+					}
 				}
 			}
 			else{
@@ -331,7 +453,9 @@ function play(player, button){ // Line 30 shows all the button codes
 					if(players[i] != undefined){
 						if(players[i].score < 999){
 							rooms[players[player].room].score = 0;
-							resetdice(players[player].room);
+							for(var i=0;i<6;i++){
+								rooms[players[player].room].dices[i] = 0;
+							}
 						}
 					}
 				}
@@ -397,7 +521,7 @@ function largestplayerinroom(theroom){
 
 
 function playersinroom(theroom){
-	var pir = 0; // Stands for Players in room.
+	var pir = 0;
 	for(var i=0;i<players.length;i++){
 		if(players[i] != undefined){
 			if(players[i].room == theroom){
@@ -429,34 +553,6 @@ function showrestartbuttons(){
 	}
 }
 
-function resetdice(theroom){
-	for(var u=0;u<rooms[theroom].dices.length;u++){  // Reset all the dice. 
-		rooms[theroom].dices[u] = 0;
-	}
-}
-
-function pressbutton(player, button){
-	var r = button-1;
-	if(rooms[players[player].room].dices[r] == 1){
-        rooms[players[player].room].score += 100;
-		rooms[players[player].room].dices[r] = -1;
-		if(players[rooms[players[player].room].turn].score > 999){
-			rooms[players[player].room].showtakebutton = true;
-		}
-		rooms[players[player].room].allowroll = true;
-		checkThreeOfAKind(rooms[players[player].room]);
-    }
-    if(rooms[players[player].room].dices[r] == 5){
-        rooms[players[player].room].score += 50;
-		rooms[players[player].room].dices[r] = -1;
-		if(players[rooms[players[player].room].turn].score > 999){
-			rooms[players[player].room].showtakebutton = true;
-		}
-		rooms[players[player].room].allowroll = true;
-		checkThreeOfAKind(rooms[players[player].room]);
-	}
-}
-
 function rolldice(){
     var num1 = Math.round(Math.random()*10);
     while(num1 > 6 || num1 == 0){
@@ -467,7 +563,9 @@ function rolldice(){
 
 function roll(theroom){
     if(allDicesDisabled(theroom)){ // IF all dices are disabled then roll them all.
-        resetdice(theroom);
+        for(var i=0;i<6;i++){
+            rooms[theroom].dices[i] = 0;
+        }
 	}
 
     for(var i=0;i<6;i++){ // Roll the available dice. 
@@ -494,7 +592,9 @@ function roll(theroom){
 	// Checking if the player broke
 	if(b == true){
 		rooms[theroom].score = 0;
-		resetdice(theroom);
+		for(var i=0;i<8;i++){ // Set all dices to 0. 
+			rooms[theroom].dices[i] = 0;
+		}
 		rooms[theroom].turn += 1;
 		rooms[theroom].showrollallbutton = false;
 		rooms[theroom].allowroll = true;
@@ -506,7 +606,9 @@ function roll(theroom){
 
 function RollAll(theroom){
     rooms[theroom].score = 0;
-    resetdice(theroom);
+    for(var i=0;i<6;i++){
+        rooms[theroom].dices[i] = 0;
+    }
     roll(theroom);
 }
 
