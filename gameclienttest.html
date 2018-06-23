@@ -6,6 +6,21 @@
     </head>
     <body style="text-align: center;">
         <p id="playername" style="text-align: right"></p>
+        <div id="joinprivateroom">
+            <h2>Join Private Game Room</h2>
+            Room Name: <input type="text" id="roomtojoin"/><br>
+            Password: <input type="password" id="roompassword"/><br><br>
+            <button onclick="cancelJoinRoom()">Cancel</button><button onclick="joinPrivateRoom()">Join Room</button>
+        </div>
+        <div id="createroom">
+            <h2>Create Game Room</h2>
+            Private Game <input type="checkbox" id="privategamecheckbox"/><br><br>
+            Room Name: <input type="text" id="newroomname"/><br>
+            Password: <input type="password" id="newroompassword"/><br><br>
+            <button onclick="cancelNewRoom()">Cancel</button><button onclick="createNewRoom()">Create Room</button>
+        </div>
+        <br>
+        <br>
         <div id="gamediv">
             Your name: <input id="name" type="text" style="text-align: center;" onchange="changeName()"/><br><br>
             <h2 id="roomname"></h2>
@@ -26,12 +41,12 @@
             <p id ="infopar"></p>
             <p id="turnnotification" style="color: red"></p>
             <p id="scorepar"></p>
+            Chat:
+            <div id="chat">
+                
+            </div><br>
+            <input id="chatbox" placeholder="Chat here:"/><button id="chatsubmit" onclick="sendChat()" class="chatbutton">Send</button><br><br>
         </div>
-        Chat:
-        <div id="chat">
-            
-        </div><br>
-        <input id="chatbox" placeholder="Chat here:"/><button id="chatsubmit" onclick="sendChat()" class="chatbutton">Send</button><br><br>
         Type /restart to restart the game<br>
         <input type="checkbox" name="localserver" value="local" id="localbutton">Local Server
         <script>
@@ -92,6 +107,13 @@
             var roomname = document.getElementById("roomname");
             var pings = 0;
             var restartbutton = document.getElementById("restartbutton");
+
+            var roomtojoin = document.getElementById("roomtojoin");
+            var roompassword = document.getElementById("roompassword");
+
+            var newroomname = document.getElementById("newroomname");
+            var newroompassword = document.getElementById("newroompassword");
+            var privategamecheckbox = document.getElementById("privategamecheckbox");
 
             /*var add = setInterval(function() {
                 // allow 1px inaccuracy by adding 1
@@ -154,23 +176,63 @@
                         rooms = JSON.parse(xhr.responseText);
                         var texttosend = "";
                         for(var i=0;i<rooms.length;i++){
-                            texttosend += '<button value="' + rooms[i].num + '" onclick="gotoroom(' + rooms[i].num + ')">' + rooms[i].name + ' (' + rooms[i].players + ')</button>';
+                            if(rooms[i].privateroom == false){
+                                texttosend += '<button value="' + rooms[i].num + '" onclick="gotoroom(' + rooms[i].num + ')">' + rooms[i].name + ' (' + rooms[i].players + ')</button>';
+                            }
                         }
                         roomdiv.innerHTML = texttosend;
                         if(rooms != undefined && roomnum != null){
                             restartbutton.hidden = !rooms[roomnum].showrestart; // Show/Hide the restart game button. 
-                            console.log(xhr.responseText);
+                            //console.log(xhr.responseText);
                         }
                     }
                 }
             }
 
-            function gotoroom(theroom){
-                var xhr = httpRequest('GET', url + "/?player=" + playernum + '&changeroom=' + theroom);
-                setTimeout(function(){
-                    updateRooms();
-                    //roomnum = theroom;
-                },1000);
+            function gotoroom(theroom, thepassword){
+                if(thepassword == undefined){
+                    thepassword = 'null';
+                }
+                var xhr = httpRequest('GET', url + "/?player=" + playernum + '&changeroom=' + theroom + '&password=' + thepassword);
+                xhr.onreadystatechange = function(){
+                    if(this.readyState == 4 && this.status == 200){
+                        if(xhr.responseText == "Wrong Password"){
+                            alert("Wrong Password");
+                        }
+                    }
+                }
+            }
+
+            function joinPrivateRoom(){
+                // Decide what room to join.
+                var theroom = 0;
+                for(var i=0;i<rooms.length;i++){
+                    if(rooms[i].name == roomtojoin.value){
+                        theroom = i;
+                        break;
+                    }
+                }
+                gotoroom(theroom, roompassword.value);
+                roomtojoin.value = '';
+                roompassword.value = '';
+            }
+
+            function createNewRoom(){
+                var privategame = privategamecheckbox.checked;
+                if(newroomname.value != ''){
+                    var newgamename = newroomname.value;
+                }
+                else {
+                    var newgamename = "Room #" + rooms.length.toString();
+                }
+                var newRoom = {name:newgamename,turn:0,num:rooms.length,score:0,dices:[0,0,0,0,0,0,0,0],bigdicenumber1:0,bigdicebasenumber1:0,bigdicenumber2:0,bigdicebasenumber2:0,showtakebutton:false,showrollallbutton:false,allowroll:true,chats:[],startscore:0,players:0,showrestart:false,privateroom:privategame,password:newroompassword.value};
+
+                var xhr = httpRequest('GET', url + "/?createroom=" + JSON.stringify(newRoom));
+                xhr.onreadystatechange = function(){
+                    if(this.readyState == 4 && this.status == 200){
+                        console.log(xhr.responseText);
+                    }
+                }
             }
 
             function setup(){
@@ -178,10 +240,10 @@
                 console.log("setting up");
                 xhr.onreadystatechange = function(){
                     if(this.readyState == 4 && this.status == 200){
-                        console.log(xhr.responseText);
+                        // console.log(xhr.responseText);
                         var results = JSON.parse(xhr.responseText);
                         playernum =  results.player;
-                        console.log("Player " + playernum);
+                        // console.log("Player " + playernum);
                         playername = "Player " + playernum;
                         document.getElementById("name").value = playername;
                     }
@@ -206,7 +268,7 @@
                             setup();
                             return;
                         }
-                        console.log(pings + " " + xhr.responseText);
+                        //console.log(pings + " " + xhr.responseText);
                         var results = JSON.parse(xhr.responseText);
                         scorepar.innerHTML = '<br>';
                         writeScore(results.p0,0);  // Figure out a way to change this to a for loop later. 

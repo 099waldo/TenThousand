@@ -2,7 +2,8 @@ var http = require('http');
 var url = require('url');
 var requests = 0;
 
-var rooms = [{name:"Room #1",turn:0,num:0,score:0,dices:[0,0,0,0,0,0,0,0],bigdicenumber1:0,bigdicebasenumber1:0,bigdicenumber2:0,bigdicebasenumber2:0,showtakebutton:false,showrollallbutton:false,allowroll:true,chats:[],startscore:9900,players:0,showrestart:false},{name:"Room #2",turn:0,num:1,score:0,dices:[0,0,0,0,0,0,0,0],bigdicenumber1:0,bigdicebasenumber1:0,bigdicenumber2:0,bigdicebasenumber2:0,showtakebutton:false,showrollallbutton:false,allowroll:true,chats:[],startscore:0,players:0,showrestart:false}];
+var rooms = [{name:"Room #1",turn:0,num:0,score:0,dices:[0,0,0,0,0,0,0,0],bigdicenumber1:0,bigdicebasenumber1:0,bigdicenumber2:0,bigdicebasenumber2:0,showtakebutton:false,showrollallbutton:false,allowroll:true,chats:[],startscore:9900,players:0,showrestart:false,privateroom:false},
+{name:"Room",turn:0,num:1,score:0,dices:[0,0,0,0,0,0,0,0],bigdicenumber1:0,bigdicebasenumber1:0,bigdicenumber2:0,bigdicebasenumber2:0,showtakebutton:false,showrollallbutton:false,allowroll:true,chats:[],startscore:0,players:0,showrestart:false,privateroom:true,password:"password"}];
 
 var players = [];
 
@@ -123,13 +124,36 @@ http.createServer(function (req, res) {
 	}
 	else if(q.query.changeroom != null){
 		console.log("Change Room Request");
+		console.log(rooms);
 		if(players[q.query.player] != undefined){
-			rooms[players[q.query.player].room].chats.push(players[q.query.player].name + " has left " + rooms[players[q.query.player].room].name);
-			players[q.query.player].chat = rooms[q.query.changeroom].chats.length;
-			players[q.query.player].room = parseInt(q.query.changeroom);
-			players[q.query.player].score = rooms[q.query.changeroom].startscore;
-			rooms[q.query.changeroom].chats.push(players[q.query.player].name + " has joined " + rooms[q.query.changeroom].name);
+			if(rooms[q.query.changeroom].privateroom == true){
+				if(q.query.password != undefined){
+					if(q.query.password == rooms[q.query.changeroom].password){
+						rooms[players[q.query.player].room].chats.push(players[q.query.player].name + " has left " + rooms[players[q.query.player].room].name);
+						players[q.query.player].chat = rooms[q.query.changeroom].chats.length;
+						players[q.query.player].room = parseInt(q.query.changeroom);
+						players[q.query.player].score = rooms[q.query.changeroom].startscore;
+						rooms[q.query.changeroom].chats.push(players[q.query.player].name + " has joined " + rooms[q.query.changeroom].name);
+					}
+					else {
+						res.end("Wrong Password");
+						return;
+					}
+				}
+			}
+			else {
+				rooms[players[q.query.player].room].chats.push(players[q.query.player].name + " has left " + rooms[players[q.query.player].room].name);
+				players[q.query.player].chat = rooms[q.query.changeroom].chats.length;
+				players[q.query.player].room = parseInt(q.query.changeroom);
+				players[q.query.player].score = rooms[q.query.changeroom].startscore;
+				rooms[q.query.changeroom].chats.push(players[q.query.player].name + " has joined " + rooms[q.query.changeroom].name);
+			}
 		}
+	}
+	else if(q.query.createroom != null)	{
+		console.log("Create room request.");
+		rooms.push(JSON.parse(q.query.createroom));
+		res.end(q.query.createroom);
 	}
 	else if(q.query.player != null){ // Then it is a attempt to play.
 		console.log("Play Request  " + requests);
