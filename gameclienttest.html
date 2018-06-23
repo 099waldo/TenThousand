@@ -5,8 +5,11 @@
         <meta name="viewport" content="width=device-width">
     </head>
     <body style="text-align: center;">
-        <button onclick="showjoinmenu(false)">Join Private Room</button>  <button onclick="showcreateroommenu(false)">Create New Room</button>
-        <p id="playername" style="text-align: right"></p>
+        <h1>Ten Thousand Online</h1>
+        <div id="startgamebutton">
+            <button class="rollbutton" onclick="startgame()">PLAY!</button>
+        </div>
+        <!-- <p id="playername" style="text-align: right"></p> -->
         <div id="joinprivateroom" hidden="true">
             <h2>Join Private Game Room</h2>
             Room Name: <input type="text" id="roomtojoin"/><br>
@@ -22,7 +25,8 @@
         </div>
         <br>
         <br>
-        <div id="gamediv">
+        <div id="gamediv" hidden="true">
+            <button onclick="showjoinmenu(false)">Join Private Room</button>  <button onclick="showcreateroommenu(false)">Create New Room</button><br><br>
             Your name: <input id="name" type="text" style="text-align: center;" onchange="changeName()"/><br><br>
             <h2 id="roomname"></h2>
             <div id="gameroomdiv">
@@ -48,7 +52,6 @@
             </div><br>
             <input id="chatbox" placeholder="Chat here:"/><button id="chatsubmit" onclick="sendChat()" class="chatbutton">Send</button><br><br>
         </div>
-        Type /restart to restart the game<br>
         <input type="checkbox" name="localserver" value="local" id="localbutton">Local Server
         <script>
 
@@ -139,7 +142,9 @@
             }
 
 
-            window.onload = function(){
+            function startgame(){
+                document.getElementById("gamediv").hidden = false;
+                document.getElementById("startgamebutton").hidden = true;
                 setup();
                 setInterval(function() {
                     update();
@@ -164,7 +169,7 @@
                 setInterval(function(){
                     updateRooms();
                 },5000);
-             }
+            }
             var url = "http://games.waldoweb.net:8080";
             //var url = "http://192.168.0.100:8080";
             //var url = "http://127.0.0.1:8080";  // For local testing only.
