@@ -7,6 +7,7 @@
     <body style="text-align: center;">
         <h1>Ten Thousand Online</h1>
         <div id="startgamebutton">
+            <p>Coded from scratch by Waldo.</p>
             <button class="rollbutton" onclick="startgame()">PLAY!</button>
         </div>
         <!-- <p id="playername" style="text-align: right"></p> -->
@@ -221,6 +222,9 @@
                         break;
                     }
                 }
+                if(theroom == 0){
+                    alert("Room doesn't exist");
+                }
                 gotoroom(theroom, roompassword.value);
                 roomtojoin.value = '';
                 roompassword.value = '';
@@ -244,7 +248,7 @@
                         console.log(xhr.responseText);
                     }
                 }
-                newgamename.value = '';
+                newroomname.value = '';
                 newroompassword.value = '';
                 document.getElementById("joinprivateroom").hidden = true;
                 document.getElementById("createroom").hidden = true;
