@@ -5,19 +5,20 @@
         <meta name="viewport" content="width=device-width">
     </head>
     <body style="text-align: center;">
+        <button onclick="showjoinmenu(false)">Join Private Room</button>  <button onclick="showcreateroommenu(false)">Create New Room</button>
         <p id="playername" style="text-align: right"></p>
-        <div id="joinprivateroom">
+        <div id="joinprivateroom" hidden="true">
             <h2>Join Private Game Room</h2>
             Room Name: <input type="text" id="roomtojoin"/><br>
             Password: <input type="password" id="roompassword"/><br><br>
-            <button onclick="cancelJoinRoom()">Cancel</button><button onclick="joinPrivateRoom()">Join Room</button>
+            <button onclick="hidemenus()">Cancel</button><button onclick="joinPrivateRoom()">Join Room</button>
         </div>
-        <div id="createroom">
+        <div id="createroom" hidden="true">
             <h2>Create Game Room</h2>
             Private Game <input type="checkbox" id="privategamecheckbox"/><br><br>
             Room Name: <input type="text" id="newroomname"/><br>
             Password: <input type="password" id="newroompassword"/><br><br>
-            <button onclick="cancelNewRoom()">Cancel</button><button onclick="createNewRoom()">Create Room</button>
+            <button onclick="hidemenus()">Cancel</button><button onclick="createNewRoom()">Create Room</button>
         </div>
         <br>
         <br>
@@ -176,8 +177,11 @@
                         rooms = JSON.parse(xhr.responseText);
                         var texttosend = "";
                         for(var i=0;i<rooms.length;i++){
-                            if(rooms[i].privateroom == false){
-                                texttosend += '<button value="' + rooms[i].num + '" onclick="gotoroom(' + rooms[i].num + ')">' + rooms[i].name + ' (' + rooms[i].players + ')</button>';
+                            if(rooms[i] != undefined){
+                                if(rooms[i].privateroom == false){ // Check if the room is a public room and display it in the menu.
+                                    texttosend += '<button value="' + rooms[i].num + '" onclick="gotoroom(' + rooms[i].num + ')">' + rooms[i].name + ' (' + rooms[i].players + ')</button>';
+                                }
+                                rooms[i].password = 'null';
                             }
                         }
                         roomdiv.innerHTML = texttosend;
@@ -215,6 +219,8 @@
                 gotoroom(theroom, roompassword.value);
                 roomtojoin.value = '';
                 roompassword.value = '';
+                document.getElementById("joinprivateroom").hidden = true;
+                document.getElementById("createroom").hidden = true;
             }
 
             function createNewRoom(){
@@ -233,6 +239,25 @@
                         console.log(xhr.responseText);
                     }
                 }
+                newgamename.value = '';
+                newroompassword.value = '';
+                document.getElementById("joinprivateroom").hidden = true;
+                document.getElementById("createroom").hidden = true;
+            }
+
+            function showjoinmenu(hideit) {
+                document.getElementById("joinprivateroom").hidden = hideit;
+                document.getElementById("createroom").hidden = !hideit;
+            }
+
+            function showcreateroommenu(hideit) {
+                document.getElementById("createroom").hidden = hideit;
+                document.getElementById("joinprivateroom").hidden = !hideit;
+            }
+
+            function hidemenus(){
+                document.getElementById("joinprivateroom").hidden = true;
+                document.getElementById("createroom").hidden = true;
             }
 
             function setup(){
