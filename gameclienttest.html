@@ -6,26 +6,38 @@
     </head>
     <body style="text-align: center;">
         <h1>Ten Thousand Online</h1>
+
+        <!-- Here is all the various windows that can pop up.  -->
+
+        <div id="myModal" class="modal">
+            <!-- Modal content -->
+            <div class="modal-content">
+                <span class="close" onclick="closemodal()">&times;</span>
+                <p id="modalmessage">Some text in the Modal..</p>
+            </div>
+        </div>
+
         <div id="startgamebutton">
             <p>Coded from scratch by Waldo.</p>
             <button class="rollbutton" onclick="startgame()">PLAY!</button>
         </div>
-        <!-- <p id="playername" style="text-align: right"></p> -->
+
         <div id="joinprivateroom" hidden="true">
             <h2>Join Private Game Room</h2>
             Room Name: <input type="text" id="roomtojoin"/><br>
             Password: <input type="password" id="roompassword"/><br><br>
             <button onclick="hidemenus()">Cancel</button><button onclick="joinPrivateRoom()">Join Room</button>
         </div>
+
         <div id="createroom" hidden="true">
             <h2>Create Game Room</h2>
             Private Game <input type="checkbox" id="privategamecheckbox"/><br><br>
             Room Name: <input type="text" id="newroomname"/><br>
             Password: <input type="password" id="newroompassword"/><br><br>
             <button onclick="hidemenus()">Cancel</button><button onclick="createNewRoom()">Create Room</button>
-        </div>
-        <br>
-        <br>
+        </div><br><br>
+
+        <!-- The actual game window -->
         <div id="gamediv" hidden="true">
             <button onclick="showjoinmenu(false)">Join Private Room</button>  <button onclick="showcreateroommenu(false)">Create New Room</button><br><br>
             Your name: <input id="name" type="text" style="text-align: center;" onchange="changeName()"/><br><br>
@@ -53,6 +65,7 @@
             </div><br>
             <input id="chatbox" placeholder="Chat here:"/><button id="chatsubmit" onclick="sendChat()" class="chatbutton">Send</button><br><br>
         </div>
+        
         <input type="checkbox" name="localserver" value="local" id="localbutton">Local Server
         <script>
 
@@ -120,6 +133,10 @@
             var newroompassword = document.getElementById("newroompassword");
             var privategamecheckbox = document.getElementById("privategamecheckbox");
 
+            var modal = document.getElementById('myModal');
+            var span = document.getElementsByClassName("close")[0];
+            var modalmessage = document.getElementById("modalmessage");
+
             /*var add = setInterval(function() {
                 // allow 1px inaccuracy by adding 1
                 var isScrolledToBottom = chat.scrollHeight - chat.clientHeight <= chat.scrollTop + 1;
@@ -142,6 +159,12 @@
                 }
             }
 
+            // When the user clicks anywhere outside of the modal, close it
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }
 
             function startgame(){
                 document.getElementById("gamediv").hidden = false;
@@ -207,7 +230,7 @@
                 xhr.onreadystatechange = function(){
                     if(this.readyState == 4 && this.status == 200){
                         if(xhr.responseText == "Wrong Password"){
-                            alert("Wrong Password");
+                            showmodal("Wrong Password");
                         }
                     }
                 }
@@ -223,7 +246,7 @@
                     }
                 }
                 if(theroom == 0){
-                    alert("Room doesn't exist");
+                    showmodal("Room doesn't exist");
                 }
                 gotoroom(theroom, roompassword.value);
                 roomtojoin.value = '';
@@ -244,7 +267,7 @@
                 for(var i=0;i<rooms.length;i++){
                     if(rooms[i] != undefined){
                         if(rooms[i].name == newgamename){
-                            alert("Room already exists please try again.");
+                            showmodal("Room already exists please try again.");
                             newroomname.value = '';
                             newroompassword.value = '';
                             return;
@@ -278,6 +301,15 @@
             function hidemenus(){
                 document.getElementById("joinprivateroom").hidden = true;
                 document.getElementById("createroom").hidden = true;
+            }
+
+            function showmodal(themessage) {
+                modalmessage.innerHTML = themessage;
+                modal.style.display = "block";
+            }
+
+            function closemodal() {
+                modal.style.display = "none";
             }
 
             function setup(){
