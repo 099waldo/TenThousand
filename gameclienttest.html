@@ -233,12 +233,23 @@
             }
 
             function createNewRoom(){
+                var roomexists = false;
                 var privategame = privategamecheckbox.checked;
                 if(newroomname.value != ''){
                     var newgamename = newroomname.value;
                 }
                 else {
                     var newgamename = "Room #" + rooms.length.toString();
+                }
+                for(var i=0;i<rooms.length;i++){
+                    if(rooms[i] != undefined){
+                        if(rooms[i].name == newgamename){
+                            alert("Room already exists please try again.");
+                            newroomname.value = '';
+                            newroompassword.value = '';
+                            return;
+                        }
+                    }
                 }
                 var newRoom = {name:newgamename,turn:0,num:rooms.length,score:0,dices:[0,0,0,0,0,0,0,0],bigdicenumber1:0,bigdicebasenumber1:0,bigdicenumber2:0,bigdicebasenumber2:0,showtakebutton:false,showrollallbutton:false,allowroll:true,chats:[],startscore:0,players:0,showrestart:false,privateroom:privategame,password:newroompassword.value};
 
