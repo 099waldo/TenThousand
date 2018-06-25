@@ -274,12 +274,15 @@
                         }
                     }
                 }
-                var newRoom = {name:newgamename,turn:0,num:rooms.length,score:0,dices:[0,0,0,0,0,0,0,0],bigdicenumber1:0,bigdicebasenumber1:0,bigdicenumber2:0,bigdicebasenumber2:0,showtakebutton:false,showrollallbutton:false,allowroll:true,chats:[],startscore:0,players:0,showrestart:false,privateroom:privategame,password:newroompassword.value};
-
+                var newRoom = {name:newgamename,turn:0,num:numberofrooms(),score:0,dices:[0,0,0,0,0,0,0,0],bigdicenumber1:0,bigdicebasenumber1:0,bigdicenumber2:0,bigdicebasenumber2:0,showtakebutton:false,showrollallbutton:false,allowroll:true,chats:[],startscore:0,players:0,showrestart:false,privateroom:privategame,password:newroompassword.value};
+                
                 var xhr = httpRequest('GET', url + "/?createroom=" + JSON.stringify(newRoom));
                 xhr.onreadystatechange = function(){
                     if(this.readyState == 4 && this.status == 200){
                         console.log(xhr.responseText);
+                        setTimeout(function(){
+                            gotoroom(newRoom.num,newRoom.password);
+                        },1000);
                     }
                 }
                 newroomname.value = '';
@@ -310,6 +313,16 @@
 
             function closemodal() {
                 modal.style.display = "none";
+            }
+
+            function numberofrooms() {
+                var numofrooms = 0;
+                for(var i=0;i<rooms.length;i++){
+                    if(rooms[i] != undefined){
+                        numofrooms += 1;
+                    }
+                }
+                return numofrooms;
             }
 
             function setup(){

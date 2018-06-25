@@ -5,6 +5,8 @@ var requests = 0;
 var rooms = [{name:"Room #1",turn:0,num:0,score:0,dices:[0,0,0,0,0,0,0,0],bigdicenumber1:0,bigdicebasenumber1:0,bigdicenumber2:0,bigdicebasenumber2:0,showtakebutton:false,showrollallbutton:false,allowroll:true,chats:[],startscore:9900,players:0,showrestart:false,privateroom:false},
 {name:"Room",turn:0,num:1,score:0,dices:[0,0,0,0,0,0,0,0],bigdicenumber1:0,bigdicebasenumber1:0,bigdicenumber2:0,bigdicebasenumber2:0,showtakebutton:false,showrollallbutton:false,allowroll:true,chats:[],startscore:0,players:0,showrestart:false,privateroom:true,password:"password"}];
 
+var roomtimeoutlimit = 10*60; // The time a room can have 0 players before getting destoryed. (in seconds)
+
 var players = [];
 
 			/* Button Codes:
@@ -65,7 +67,7 @@ http.createServer(function (req, res) {
 			delete players[n];
 			console.log("Kicked player " + p);
 			rooms[0].chats.push("Player " + p + " left the game.");
-			console.log(players);
+			// console.log(players);
 			console.log("players.length: " + players.length);
 		}, 10000);
 		console.log("Player " + players[n].name  + " has joined");
@@ -110,7 +112,7 @@ http.createServer(function (req, res) {
 		var theroom = players[q.query.player].room;
 		if(q.query.sendchat != ""){
 			rooms[theroom].chats.push(players[q.query.player].name + ": " + q.query.sendchat);
-			console.log(rooms[theroom].chats[rooms[theroom].chats.length-1]);
+			// console.log(rooms[theroom].chats[rooms[theroom].chats.length-1]);
 		}
 		res.end('Chat send');
 	}
@@ -124,7 +126,7 @@ http.createServer(function (req, res) {
 	}
 	else if(q.query.changeroom != null){
 		console.log("Change Room Request");
-		console.log(rooms);
+		// console.log(rooms);
 		if(players[q.query.player] != undefined){
 			if(rooms[q.query.changeroom].privateroom == true){
 				if(q.query.password != undefined){
@@ -152,7 +154,12 @@ http.createServer(function (req, res) {
 	}
 	else if(q.query.createroom != null)	{
 		console.log("Create room request.");
-		rooms.push(JSON.parse(q.query.createroom));
+		for(var i=0;i<rooms.length+1;i++){
+			if(rooms[i] == undefined){
+				rooms[i] = JSON.parse(q.query.createroom);
+				break;
+			}
+		}
 		res.end(q.query.createroom);
 	}
 	else if(q.query.player != null){ // Then it is a attempt to play.
@@ -178,7 +185,7 @@ http.createServer(function (req, res) {
 			rooms[players[q.query.ping].room].chats.push(players[q.query.ping].name + " left the game.");
 			delete players[q.query.ping];
 			console.log("Kicked player " + q.query.ping);
-			console.log(players);
+			// console.log(players);
 			console.log("players.length: " + players.length);
 		}, 10000);
 		var allplayers = '{';
@@ -205,21 +212,25 @@ http.createServer(function (req, res) {
 			/*if(i==0){
 				fixturns(i);
 			}*/
-			fixturns(i);
-			if(players[rooms[i].turn] != null){ // Show or hide the take button.
-				if(players[rooms[i].turn].score < 999){
-					if(rooms[i].score > 999){
-						rooms[i].showtakebutton = true;
-					}
-					else{
-						rooms[i].showtakebutton = false;
+			if(rooms[i] != undefined){
+				fixturns(i);
+				if(players[rooms[i].turn] != null){ // Show or hide the take button.
+					if(players[rooms[i].turn].score < 999){
+						if(rooms[i].score > 999){
+							rooms[i].showtakebutton = true;
+						}
+						else{
+							rooms[i].showtakebutton = false;
+						}
 					}
 				}
 			}
 		}
 	}
 	for(var i=0;i<rooms.length;i++){  // Reset the amount of players in each room.
-		rooms[i].players = 0;
+		if(rooms[i] != undefined){
+			rooms[i].players = 0;
+		}
 	}
 	for(var i=0;i<players.length;i++){  // Set the amount of players in each room and check to make sure they aren't over 10,000.
 		if(players[i] != undefined){
@@ -238,6 +249,28 @@ http.createServer(function (req, res) {
 			}
 		}
 	}
+
+	 // Check if rooms should be deleted.
+	 for(var i=0;i<rooms.length;i++){
+	 	if(rooms[i] != undefined) {
+			if(rooms[i].players == 0 && rooms[i].roomtimeout == undefined){
+				rooms[i].roomtimeout = new Date();
+			}
+			else {
+				if(rooms[i].players == 0){
+					//rooms[i].roomtimeout = undefined;
+				}
+			}
+			if(rooms[i].roomtimeout != undefined){
+				// Check if the time has been more than 10 seconds or not.
+				if((new Date() - rooms[i].roomtimeout)/1000 > roomtimeoutlimit && rooms[i].players == 0 && i != 0){
+					console.log("Deleted " + rooms[i].name);
+					delete rooms[i];
+				}
+			}
+	 	}
+	 }
+
 	showrestartbuttons();
 	res.end("Something is broken please reload the page.");
 }).listen(8080);
@@ -576,6 +609,13 @@ function showrestartbuttons(){
 		}
 	}
 }
+
+function isempty(obj) {
+	if ((typeof obj === 'number' && obj > 0) || obj === true) {
+	  return false;
+	}
+	return !!obj ? !Object.keys(obj).length : true;
+  }
 
 function rolldice(){
     var num1 = Math.round(Math.random()*10);
