@@ -121,7 +121,7 @@ http.createServer(function (req, res) {
 		players[q.query.player].name = q.query.setname;
 		res.end("name changed");
 	}
-	else if(q.query.updaterooms != null){
+	else if(q.query.roomrequest != null){
 		res.end(JSON.stringify(rooms));
 	}
 	else if(q.query.changeroom != null){

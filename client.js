@@ -129,7 +129,7 @@ var url = "http://games.waldoweb.net:8080";
 //var url  = "http://localhost:8080";
 
 function updateRooms() {
-    var xhr = httpRequest('GET', url + "/?updaterooms=" + roomnum);
+    var xhr = httpRequest('GET', url + "/?roomrequest=" + roomnum);
     xhr.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
             rooms = JSON.parse(xhr.responseText);
@@ -185,6 +185,7 @@ function joinPrivateRoom() {
 }
 
 function createNewRoom() {
+    var roomexists = false;
     var privategame = privategamecheckbox.checked;
     if (newroomname.value != '') {
         var newgamename = newroomname.value;
