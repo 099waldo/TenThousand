@@ -221,18 +221,21 @@ function createNewRoom() {
 }
 
 function showjoinmenu(hideit) {
-    document.getElementById("joinprivateroom").hidden = hideit;
-    document.getElementById("createroom").hidden = !hideit;
+    showmodal(document.getElementById("joinprivateroom").innerHTML);
+    // document.getElementById("joinprivateroom").hidden = hideit; // The old way of doing it. 
+    // document.getElementById("createroom").hidden = !hideit;
 }
 
 function showcreateroommenu(hideit) {
-    document.getElementById("createroom").hidden = hideit;
-    document.getElementById("joinprivateroom").hidden = !hideit;
+    showmodal(document.getElementById("createroom").innerHTML);
+    // document.getElementById("createroom").hidden = hideit;
+    // document.getElementById("joinprivateroom").hidden = !hideit;
 }
 
 function hidemenus() {
-    document.getElementById("joinprivateroom").hidden = true;
-    document.getElementById("createroom").hidden = true;
+    closemodal();
+    // document.getElementById("joinprivateroom").hidden = true;
+    // document.getElementById("createroom").hidden = true;
 }
 
 function showmodal(themessage) {
