@@ -57,14 +57,14 @@ button:active {
     margin-bottom: 3px;
 }
 #joinprivateroom {
-    border: solid 2px black;
+    /* border: solid 2px black; */
     width: 500px;
     margin-left: auto;
     margin-right: auto;
     margin-bottom: 5px;
 }
 #createroom {
-    border: solid 2px black;
+    /* border: solid 2px black; */
     width: 500px;
     margin-left: auto;
     margin-right: auto;

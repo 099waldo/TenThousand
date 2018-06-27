@@ -166,26 +166,31 @@ function gotoroom(theroom, thepassword) {
 }
 
 function joinPrivateRoom() {
-    // Decide what room to join.
+    // Decide what room to join.r
+    roomtojoin = document.getElementById("roomtojoin"); // Update the variables because it won't actually exist when the page loads. 
+    roompassword = document.getElementById("roompassword");
     var theroom = 0;
     for (var i = 0; i < rooms.length; i++) {
-        if (rooms[i].name == roomtojoin.value) {
-            theroom = i;
-            break;
+        if(rooms[i] != null){
+            if (rooms[i].name == roomtojoin.value) {
+                theroom = i;
+                break;
+            }
         }
     }
+    closemodal();
     if (theroom == 0) {
         showmodal("Room doesn't exist");
     }
     gotoroom(theroom, roompassword.value);
     roomtojoin.value = '';
     roompassword.value = '';
-    document.getElementById("joinprivateroom").hidden = true;
-    document.getElementById("createroom").hidden = true;
 }
 
 function createNewRoom() {
-    var roomexists = false;
+    newroomname = document.getElementById("newroomname"); // Update the variables because it won't actually exist when the page loads. 
+    newroompassword = document.getElementById("newroompassword");
+    privategamecheckbox = document.getElementById("privategamecheckbox");
     var privategame = privategamecheckbox.checked;
     if (newroomname.value != '') {
         var newgamename = newroomname.value;
@@ -193,6 +198,7 @@ function createNewRoom() {
     else {
         var newgamename = "Room #" + rooms.length.toString();
     }
+    closemodal();
     for (var i = 0; i < rooms.length; i++) {
         if (rooms[i] != undefined) {
             if (rooms[i].name == newgamename) {
@@ -216,26 +222,14 @@ function createNewRoom() {
     }
     newroomname.value = '';
     newroompassword.value = '';
-    document.getElementById("joinprivateroom").hidden = true;
-    document.getElementById("createroom").hidden = true;
 }
 
 function showjoinmenu(hideit) {
-    showmodal(document.getElementById("joinprivateroom").innerHTML);
-    // document.getElementById("joinprivateroom").hidden = hideit; // The old way of doing it. 
-    // document.getElementById("createroom").hidden = !hideit;
+    showmodal(document.getElementById("joinroomtemplate").innerText);
 }
 
 function showcreateroommenu(hideit) {
-    showmodal(document.getElementById("createroom").innerHTML);
-    // document.getElementById("createroom").hidden = hideit;
-    // document.getElementById("joinprivateroom").hidden = !hideit;
-}
-
-function hidemenus() {
-    closemodal();
-    // document.getElementById("joinprivateroom").hidden = true;
-    // document.getElementById("createroom").hidden = true;
+    showmodal(document.getElementById("createroomtemplate").innerHTML);
 }
 
 function showmodal(themessage) {

@@ -22,20 +22,26 @@
             <button class="rollbutton" onclick="startgame()">PLAY!</button>
         </div>
 
-        <div id="joinprivateroom" hidden="true">
-            <h2>Join Private Game Room</h2>
-            Room Name: <input type="text" id="roomtojoin"/><br>
-            Password: <input type="password" id="roompassword"/><br><br>
-            <button onclick="hidemenus()">Cancel</button><button onclick="joinPrivateRoom()">Join Room</button>
-        </div>
+        <script id="joinroomtemplate" type="x-tmpl-mustache">
+            <div id="joinprivateroom">
+                <h2>Join Private Game Room</h2>
+                Room Name: <input type="text" id="roomtojoin"/><br>
+                Password: <input type="password" id="roompassword"/><br><br>
+                <button onclick="hidemenus()">Cancel</button><button onclick="joinPrivateRoom()">Join Room</button>
+            </div>
+        </script>
 
-        <div id="createroom" hidden="true">
-            <h2>Create Game Room</h2>
-            Private Game <input type="checkbox" id="privategamecheckbox"/><br><br>
-            Room Name: <input type="text" id="newroomname"/><br>
-            Password: <input type="password" id="newroompassword"/><br><br>
-            <button onclick="hidemenus()">Cancel</button><button onclick="createNewRoom()">Create Room</button>
-        </div><br><br>
+        <script id="createroomtemplate" type="x-tmpl-mustache">
+            <div id="createroom">
+                <h2>Create Game Room</h2>
+                Private Game <input type="checkbox" id="privategamecheckbox"/><br><br>
+                Room Name: <input type="text" id="newroomname"/><br>
+                Password: <input type="password" id="newroompassword"/><br><br>
+                <button onclick="hidemenus()">Cancel</button><button onclick="createNewRoom()">Create Room</button>
+            </div>
+        </script>
+
+        <br><br>
 
         <!-- The actual game window -->
         <div id="gamediv" hidden="true">
