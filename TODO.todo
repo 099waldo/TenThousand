@@ -1,0 +1,107 @@
+Ten Thousand Online Game:
+
+  ☐ Make it so you have to login with an account to play the game. 
+    ☐ Setup firebase to handle the logins. https://firebase.google.com/docs/samples/ Check under Authentication.
+    ☐ Make it so you can login with your google account. 
+    ☐ Store all the players in an sql database. 
+
+  ☐ Maybe make a administrative page so I can move players from rooms, kick players, and reset rooms etc.
+  
+  ☐ Update UI: Change the numbers used for the dice into images and update UI with CSS grids.
+    ☐ Learn CSS Grids and build a page or two.
+    ☐ Feature: When you change your name it sets it as a cookie so it can save your name for next time you play so you don't have to type it in again @low
+    ☐ Add a you broke message.
+    ☐ Add a hide and show public rooms button. On mobile screens the number of public rooms could waste a lot of space on the screen while playing.
+  
+  Done:
+    ✔ Replace alerts in client to a floating window. @started(18-06-23 10:17) @done(18-06-23 10:49) @lasted(32m39s)
+    ✔ Make the server delete rooms after they aren't used for 10mins. @done(18-06-24 19:54)
+    ✔ If the player tries to create a room that already exists display a message and cancel the creation of the room. @done(18-06-23 08:58)
+    ✔ Give the client a message when they try to join a room that doesn't exist. @started(18-06-23 08:29) @done(18-06-23 08:36) @lasted(7m34s)
+    ✔ When you create a new room automatically join it. @done(18-06-24 20:10)
+
+    ✔ Change join room and create room menu's to modals. @started(18-06-26 17:21) @done(18-06-26 17:26) @lasted(5m49s)
+
+    ✔ BUG: Server crashes because of the change to modals for the create room and join room menus. It should be an easy fix to just delete the old menus and get the modals to display it from something else. @done(18-06-27 16:03)
+
+    ✔ Make variable names for room update more understandable. @done(18-06-27 16:03)
+    ✔ Set the player's score to 0 if they go over 10,000. @done(18-06-16 16:51)
+    
+    ✔ Make it so you can create public and private rooms. @done(18-06-23 08:10)
+      ✔ Make it so you can join private rooms. @done(18-06-19 21:50)
+      ✔ Make it so you can create new private rooms. @done(18-06-22 15:19)
+      ✔ Hide and show the Join Room and Create room menus. @started(18-06-22 21:52) @done(18-06-22 22:19) @lasted(27m37s)
+      ✔ Make it so you don't automatically connect to a room when you first join the game. @done(18-06-23 08:09)
+      ✔ Make it so it isn't so easy to find the room password from the client page. @started(18-06-23 07:43) @done(18-06-23 07:47) @lasted(4m28s)
+    ✔ Optimize Code: Make the server.js files more readable. Make functions for common tasks. Add comments. @done(18-06-19 12:33)
+      ✔ Reset dice function. @done(18-06-19 08:31)
+      ✔ Organize the play() function. The taking dice part could be improved a lot with a few functions. @done(18-06-19 08:46)
+      ✔ Add more comments. @done(18-06-19 12:33)
+    ✔ If you roll 123456 it keeps giving it to you. @today @done(18-06-16 15:44)
+    ✔ Finish adding game resets @today @done(18-06-16 15:25)
+    ✔ Slow down turn flash. @done(18-06-16 15:47)
+    ✔ Feature: Make a reset game room button appear once a player in that room has reached 10,000 points. @done(18-06-16 15:47)
+    ✔ Figure out what I want to do about game resets. See OneNote. @done(18-06-13 18:49)
+    ✔ BUG: If a player connects, then disconnects then if you try to connect an hour later the server won't respond. I have to Ctrl+C the server.js and rerun it again to get it to work. It happens less than half an hour after the player joins. It seems to only happen on the Pi. Test this @today   @started(18-06-01 12:41) @done(18-06-13 18:50) @lasted(1w5d6h9m16s)
+    ✔ Update the client request. Instead of using setTimeout() wait until the response has been sent. @done(18-06-11 16:30)
+    ✔ Security: Change the client's url of the server to be a domain name or something so that it isn't so easy to see our global ip address. @critical @done(18-06-11 18:47)
+    ✘ BUG: The <title> turn notification is not working when you switch to a different tab sometimes. I think the problem is that it just won't make http requests when you are on a different tab for some reason. @cancelled(18-06-13 17:44)
+    ✔ BUG: When two players are playing in different rooms the turns get mixed up sometimes. Already implemented. Test @today. @done(18-06-13 17:41)
+    ✘ BUG: Sound doesn't work on mobile. @cancelled(18-06-12 17:31)
+    ✔ Feature: When you click a dice button change it to null or something so that there isn't a -1 before the button disapears. @low @done(18-06-11 16:33)
+      Will be fixed when we change everything to images of dice instead of text
+    ✔ Feature: Add muitiple game rooms so that the entire project is much easier to scale up. Do this before staring on yahtzee. @high @started(18-06-03 09:00) @done(18-06-08 14:52)   @lasted(5d5h52m5s)
+    ✔ Get the client ready to display room information. List of rooms, and name of current room. @started(18-06-03 13:46) @done(18-06-03 14:00) @lasted(14m54s)
+    ✔ Convert everything on the server to run off of the new rooms system. @done(18-06-08 14:51)
+      ✔ Update() in server needs to know which player is requesting the update. @done(18-06-03 19:58)
+      ✔ checkThreeOfAKind() needs to know what room. @done(18-06-03 17:27)
+      ✔ Complete all TODOs in server.js @done(18-06-03 17:55)
+      ✘ Game restart needs to know which room to restart. For now it is just room 0. @cancelled(18-06-05 09:06)
+      ✔ 449 Bug: In fixturns() it needs to make sure that the player is in the right room or else the player that it picks might not be in the room. @done(18-06-05 16:15)
+      ✔ BUG: While changing between rooms the client disconnects for some reason and I have to refresh the page to get it to connect again. See OneNote. @done(18-06-06 09:09)
+      ✔ BUG: After you finish your turn the server won't change to the next person's turn. @done(18-06-08 14:51)
+      ✔ Make the server reset your score when you switch to a different room. @done(18-06-08 14:51)
+      ✔ Fix all the bugs that occur with the new rooms system. @done(18-06-08 14:51)
+    ✔ Get the server to send the entire list of rooms to the client @done(18-06-04 15:24)
+    ✔ Make the client request new room information every so minute or so. @done(18-06-04 15:24)
+  
+    ✔ Get seperate chat rooms working. @done(18-06-08 15:15)
+    
+    ✔ Add a chat message when you join or leave a room. @done(18-06-08 15:57)
+    ✔ BUG: When playing the sound it gives an error. Only happens when the tab is not active. @done(18-06-11 16:07)
+    ✔ BUG: If you roll 1000 and 300 then you can't take the 300 for some reason. Happens every time. (I can't figure out why this is happening) @low @started(18-05-31 16:42) @done (18-05-31 16:50) @lasted(8m8s)
+    ✔ Feature: Add a sound effect when it is your turn.@high @done(18-05-29 11:43)
+    ✔ Feature: Make a light blink or something when it is your turn. @critical @done(18-05-26 18:06)
+    ✔ BUG: If you roll three ones you can take the ones then take the 1000. @critical @done(18-05-26 17:38)
+    ✔ Fix the issue with local play when the client page is hosted @critical @done(18-05-26 17:01) You just need to make the Origin thing on the server equal to waldoweb.net when you are  hosting from there.
+    ✔ BUG: For some reason it resets the game multiple times by it's self after I reset it 3 times. @done(18-05-22 21:44)
+    ✔ Feature: When a player joins the game or changes his name add something in chat like "Player 0 has joined" and "Player0 is now known as Waldo" @low @started(18-05-22 17:15) @done(18-05-22 17:22) @lasted(7m47s)
+    ✔ BUG: You can roll unlimited times without taking anything @high @started(18-05-22 16:53) @done(18-05-22 17:14) @lasted(21m9s)
+    ✔ Add a Restart Game Button or at least a function I can run from the console that will reset everything. @done (18-05-21 13:57)
+    You type /restart into the chat and  the game will reset.
+    ✔  Make a chat system (so our cousins don't have to go back and forth from hangouts all the time) by adding content to a <div> element or something so that you can scroll back through past chats. (try making the size of the <div> fixed if it won't make itself scrollable) @done (18-05-21 13:47)
+    Push a chat to a chat variable everytime there is a chat then send the client the next one that it hasen't recieved if any.
+    For example P1 is on chat 3 and requests to be updated on the chats so he will be sent chat 4. Then the next time he requests a
+    new chat then he gets chat 5. So in server.js give each player a chat number that he is on. If a player joins and there was already
+    chatting going on, give him the most recent chat number so he doesn't have to be behind until he recieves all the chats.
+    Do this so that the player never misses a chat.
+    ✔  BUG: double check that there are no connecting to the server errors that happen when the server is started up. @done (18-05-21 11:02)
+    ✔  make it so you can change your name @done (18-05-21 10:31)
+    ✔  make it so you can't take nothing @done (18-05-21 09:49)
+    ✔  fix all the issues with the roll all button and take it buttons not hiding properly @done (18-05-21 09:41)
+    ✔  fix the bug where it checks if the next player has > 999 points but there is no player 2 so make it go to player 0 instead. This crashes the server with this error: "server.js:314  @done (18-05-21 09:27)Fixed by running the function fixturns() before the if statment.
+
+Notes:
+  Raspi:
+    sudo chmod 777 file.js  to set it so that anyone can read and write. Was having trouble after apache2 changed all the permissions of my files.
+  VSCode:
+    Alt + Z to Word Wrap
+    Ctrl + M to jump between brackets.
+    Alt + S to start on something
+    Move lines with Alt + Up Arrow
+    Can use tags @critical @high @low @today
+    Ctrl + Shift + P Then type dif:file and choose the file you want to compare it to.
+
+Change Themes Ctrl+K Ctrl+T
+Show Git Shift+Ctrl+G
+Hide Sidebar Ctrl+B
