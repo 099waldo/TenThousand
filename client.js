@@ -225,7 +225,7 @@ function createNewRoom() {
 }
 
 function showjoinmenu(hideit) {
-    showmodal(document.getElementById("joinroomtemplate").innerText);
+    showmodal(document.getElementById("joinroomtemplate").innerHTML);
 }
 
 function showcreateroommenu(hideit) {
