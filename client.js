@@ -145,7 +145,9 @@ function updateRooms() {
             roomdiv.innerHTML = texttosend;
             if (rooms != undefined && roomnum != null) {
                 restartbutton.hidden = !rooms[roomnum].showrestart; // Show/Hide the restart game button. 
-                //console.log(xhr.responseText);
+                if(rooms[roomnum] == undefined){
+                    roomnum = 0;
+                }
             }
         }
     }
