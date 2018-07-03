@@ -1,0 +1,208 @@
+<html>
+
+<head>
+    <title id="title">Ten Thousand</title>
+</head>
+<style>
+    body {
+        background-color: darkgray;
+        font-size: 20px;
+        text-align: center;
+    }
+
+    .group {
+        margin-right: auto;
+        margin-left: auto;
+        /* border: 1px solid black; */
+        max-width: 90%;
+        text-align: center;
+        padding: 5px;
+    }
+
+    button {
+        padding: 10px;
+        min-width: 48px;
+        min-height: 48px;
+        border: 2px solid rgb(95, 65, 0);
+        background-color: rgb(255, 217, 0);
+        color: rgb(95, 65, 0);
+        font-size: 20px;
+    }
+    button:active {
+        background: rgba(0, 0, 0, 0.445);
+    }
+    button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+    .dice {
+        border: none;
+        background-color: rgba(0, 0, 0, 0);
+        background-size: cover;
+    }
+    .dice1 {
+        background-image: url("dice1.png");
+    }
+    .dice2 {
+        background-image: url("dice2.png");
+    }
+    .dice3 {
+        background-image: url("dice3.png");
+    }
+    .dice4 {
+        background-image: url("dice4.png");
+    }
+    .dice5 {
+        background-image: url("dice5.png");
+    }
+    .dice6 {
+        background-image: url("dice6.png");
+    }
+    .chatdiv {
+        width: 100%;
+        height: 175px;
+        background-color: white;
+        border: 2px solid rgb(95, 65, 0);
+        background-color: rgb(255, 217, 0);
+        color: rgb(95, 65, 0);
+    }
+    #chat {
+        overflow: auto;
+    }
+    input[type="text"], input[type="password"] {
+        min-width: 48px;
+        min-height: 39px;
+        font-size: 20px;
+        width: 175px;
+    }
+    input:hover {
+        opacity: 50%;
+    }
+    /* The Modal (background) */
+    .modal {
+        display: none; /* Hidden by default */
+        position: fixed; /* Stay in place */
+        z-index: 1; /* Sit on top */
+        padding-top: 100px; /* Location of the box */
+        left: 0;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(0,0,0); /* Fallback color */
+        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    }
+    /* Modal Content */
+    .modal-content {
+        background-color: #fefefe;
+        margin: auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 85%;
+        text-align: center;
+    }
+
+    /* The Close Button */
+    .close {
+        color: #aaaaaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: #000;
+        text-decoration: none;
+        cursor: pointer;
+    }
+</style>
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+<body>
+    <h1 style="text-align: center;">Ten Thousand Online</h1>
+    <div id="myModal" class="modal">
+        <!-- Modal content -->
+        <div class="modal-content">
+            <span class="close" onclick="closemodal()">&times;</span>
+            <p id="modalmessage"></p>
+        </div>
+    </div>
+
+    <div id="startgamebutton">
+        <p>Coded from scratch by Waldo.</p>
+        <button class="rollbutton" onclick="startgame()">PLAY!</button>
+    </div>
+
+    <div class="main" id="gamediv" hidden="true">
+        <div class="group">
+            <button onclick="showjoinmenu(false)">Join Room</button>
+            <button onclick="showcreateroommenu(false)">Create Room</button>
+        </div>
+
+        <div class="group nameinput">
+            <h2 id="roomname"></h2>
+            Your Name: <input type="text" maxlength="10" id="name" onchange="changeName()">
+        </div>
+
+        <div class="group">
+            <div id="gameroomdiv">
+            </div><br>
+        </div>
+
+        <div class="group">
+            <button onclick="RollAll()" id="rollallbutton" class="rollbutton">Roll All Dice</button>
+            <button onclick="roll()" id="rollbutton" class="rollbutton">Roll Dice</button>
+        </div>
+        <div class="group">
+            <button class="dice" id="dice1" onclick="dice1()"></button>
+            <button class="dice" id="dice2" onclick="dice2()"></button>
+            <button class="dice" id="dice3" onclick="dice3()"></button>
+            <button class="dice" id="dice4" onclick="dice4()"></button>
+            <button class="dice" id="dice5" onclick="dice5()"></button>
+            <button class="dice" id="dice6" onclick="dice6()"></button><br>
+            <button onclick="bigDice1()" id="bigdice1">0</button>
+            <button onclick="bigDice2()" id="bigdice2">0</button>
+        </div>
+        <div class="group">
+            <button onclick="takeit()" id="takeitbutton"  class="rollbutton">Take It</button>
+        </div>
+        <div class="group">
+            <button onclick="restart()" id="restartbutton" class="restartbutton">Restart Game</button>
+        </div>
+        <div class="group">
+            <p id ="infopar"></p>
+            <p id="turnnotification" style="color: red"></p>
+            <p id="scorepar"></p>
+        </div>
+        <div class="group">
+            Chat:
+            <div class="chatdiv" id="chat">
+            </div>
+            <input type="text" id="chatbox" placeholder="Chat here:"><button id="chatsubmit" onclick="sendChat()" class="chatbutton">Send</button>
+        </div>
+        <div class="group">
+            <input type="checkbox" name="localserver" value="local" id="localbutton">Local Server
+        </div>
+    </div>
+    <script src="client.js"></script>
+
+    <script id="joinroomtemplate" type="x-tmpl-mustache">
+        <div id="joinprivateroom">
+            <h2>Join Private Game Room</h2>
+            Room Name: <input type="text" id="roomtojoin"/><br>
+            Password: <input type="password" id="roompassword"/><br><br>
+            <button onclick="closemodal()">Cancel</button><button onclick="joinPrivateRoom()">Join Room</button>
+        </div>
+    </script>
+
+    <script id="createroomtemplate" type="x-tmpl-mustache">
+        <div id="createroom">
+            <h2>Create Game Room</h2>
+            Private Game <input type="checkbox" id="privategamecheckbox"/><br><br>
+            Room Name: <input type="text" id="newroomname"/><br>
+            Password: <input type="password" id="newroompassword"/><br><br>
+            <button onclick="closemodal()">Cancel</button><button onclick="createNewRoom()">Create Room</button>
+        </div>
+    </script>
+</body>
+</html>
