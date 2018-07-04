@@ -160,10 +160,10 @@
             Your Name: <input type="text" maxlength="10" id="name" onchange="changeName()">
         </div>
 
-        <div class="group">
+        <!-- <div class="group">
             <div id="gameroomdiv">
             </div><br>
-        </div>
+        </div> -->
 
         <div class="group">
             <button onclick="RollAll()" id="rollallbutton" class="rollbutton">Roll All Dice</button>
@@ -205,6 +205,9 @@
             Room Name: <input type="text" id="roomtojoin"/><br>
             Password: <input type="password" id="roompassword"/><br><br>
             <button onclick="closemodal()">Cancel</button><button onclick="joinPrivateRoom()">Join Room</button>
+            <h2>Join Public Game Room</h2>
+            <div id="gameroomdiv">
+            </div>
         </div>
     </script>
 

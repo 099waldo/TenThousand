@@ -144,7 +144,10 @@ function updateRooms() {
                     rooms[i].password = 'null';
                 }
             }
-            roomdiv.innerHTML = texttosend;
+            roomdiv = document.getElementById("gameroomdiv");
+            if(roomdiv != null){
+                roomdiv.innerHTML = texttosend;
+            }
             if (rooms != undefined && roomnum != null) {
                 restartbutton.hidden = !rooms[roomnum].showrestart; // Show/Hide the restart game button. 
                 if(rooms[roomnum] == undefined){
