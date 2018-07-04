@@ -18,9 +18,9 @@ Ten Thousand Online Game:
     ✔ Make the mobile friendly version. @done(18-07-03 09:38)
     ✔ Make the desktop friendly version. @started(18-07-04 08:33) @done(18-07-04 09:23) @lasted(50m35s)
     ✘ Learn CSS Grids and build a page or two. @cancelled(18-07-03 09:38)
-    ☐ Feature: When you change your name it sets it as a cookie so it can save your name for next time you play so you don't have to type it in again @low
+    ✘ Feature: When you change your name it sets it as a cookie so it can save your name for next time you play so you don't have to type it in again @low @cancelled(18-07-04 09:34)
     ☐ Add a you broke message.
-    ☐ Add a hide and show public rooms button. On mobile screens the number of public rooms could waste a lot of space on the screen while playing.
+    ✔ Move the public room buttons to the join room modal screen. Right now it takes up a lot of room on the main screen. @started(18-07-04 09:36) @done(18-07-04 09:44) @lasted(8m42s)
   
   Done:
     ✔ Replace alerts in client to a floating window. @started(18-06-23 10:17) @done(18-06-23 10:49) @lasted(32m39s)
