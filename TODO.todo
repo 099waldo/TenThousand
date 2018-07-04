@@ -16,7 +16,7 @@ Ten Thousand Online Game:
 
   ☐ Update UI: Change the numbers used for the dice into images and update UI.
     ✔ Make the mobile friendly version. @done(18-07-03 09:38)
-    ☐ Make the desktop friendly version.
+    ✔ Make the desktop friendly version. @started(18-07-04 08:33) @done(18-07-04 09:23) @lasted(50m35s)
     ✘ Learn CSS Grids and build a page or two. @cancelled(18-07-03 09:38)
     ☐ Feature: When you change your name it sets it as a cookie so it can save your name for next time you play so you don't have to type it in again @low
     ☐ Add a you broke message.
