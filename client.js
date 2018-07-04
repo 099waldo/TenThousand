@@ -17,6 +17,8 @@ dices.push(document.getElementById("dice4"));
 dices.push(document.getElementById("dice5"));
 dices.push(document.getElementById("dice6"));
 
+var dicesobj = [0,0,0,0,0,0];
+
 var bigdice1 = document.getElementById("bigdice1");
 var bigdice2 = document.getElementById("bigdice2");
 
@@ -145,7 +147,9 @@ function updateRooms() {
             roomdiv.innerHTML = texttosend;
             if (rooms != undefined && roomnum != null) {
                 restartbutton.hidden = !rooms[roomnum].showrestart; // Show/Hide the restart game button. 
-                //console.log(xhr.responseText);
+                if(rooms[roomnum] == undefined){
+                    roomnum = 0;
+                }
             }
         }
     }
@@ -392,12 +396,12 @@ function update() {
             if (this.readyState == 4 && this.status == 200) {
                 infopar.innerHTML = xhr.responseText;
                 var results = JSON.parse(xhr.responseText);
-                dices[0].innerHTML = results.d1;
-                dices[1].innerHTML = results.d2;
-                dices[2].innerHTML = results.d3;
-                dices[3].innerHTML = results.d4;
-                dices[4].innerHTML = results.d5;
-                dices[5].innerHTML = results.d6;
+                dicesobj[0] = results.d1;
+                dicesobj[1] = results.d2;
+                dicesobj[2] = results.d3;
+                dicesobj[3] = results.d4;
+                dicesobj[4] = results.d5;
+                dicesobj[5] = results.d6;
                 bigdice1.innerHTML = results.bd1;
                 bigdice2.innerHTML = results.bd2;
                 turn = results.turn;
@@ -496,7 +500,7 @@ function takeit() {
 
 function disableDices() { // Deciding weather or not to hide or disable the dice. 
     for (var i = 0; i < 6; i++) {
-        if (dices[i].innerHTML == "1" || dices[i].innerHTML == "5") {
+        if (dicesobj[i] == '1' || dicesobj[i] == '5') {
             dices[i].disabled = false;
             dices[i].hidden = false;
         }
@@ -505,11 +509,32 @@ function disableDices() { // Deciding weather or not to hide or disable the dice
             dices[i].hidden = true;
         }
 
-        if (dices[i].innerHTML == "-1") {
+        if (dicesobj[i] == "-1") {
             dices[i].hidden = true;
         }
         else {
             dices[i].hidden = false;
+        }
+        if(dicesobj[i] == 1){
+            dices[i].innerHTML = '<img src="dice1.png">';
+        }
+        if(dicesobj[i] == 2){
+            dices[i].innerHTML = '<img src="dice2.png">';
+        }
+        if(dicesobj[i] == 3){
+            dices[i].innerHTML = '<img src="dice3.png">';
+        }
+        if(dicesobj[i] == 4){
+            dices[i].innerHTML = '<img src="dice4.png">';
+        }
+        if(dicesobj[i] == 5){
+            dices[i].innerHTML = '<img src="dice5.png">';
+        }
+        if(dicesobj[i] == 6){
+            dices[i].innerHTML = '<img src="dice6.png">';
+        }
+        if(dicesobj[i] == 0){
+            dices[i].innerHTML = '<img src="dice0.png">';
         }
     }
     if (bigdice1.innerHTML == "0") {

@@ -38,12 +38,14 @@ http.createServer(function (req, res) {
 		//console.log(q.query.update);
 		if(players[q.query.update] != undefined){
 			var playerroom = players[q.query.update].room;
-			var gamevalues = '{"d1":"' + rooms[playerroom].dices[0] + '", "d2":"' + rooms[playerroom].dices[1] + '", "d3":"'+rooms[playerroom].dices[2]
-        	+ '", "d4":"'+rooms[playerroom].dices[3] + '", "d5":"' + rooms[playerroom].dices[4] + '", "d6":"' + rooms[playerroom].dices[5] + '", "turn":"'
-		  	+ rooms[playerroom].turn + '", "bd1":"' + rooms[playerroom].dices[6] + '", "bd2":"' + rooms[playerroom].dices[7] + '", "score":"' + rooms[playerroom].score + '", 	"takebutton":"'
-			   + rooms[playerroom].showtakebutton + '", "rollallbutton":"' + rooms[playerroom].showrollallbutton + '", "room":"' + playerroom + '"}';
-			// Servers must return text in JSON format. eg. '{ "name":"John", "age":31, "city":"New York" }'
-			res.end(gamevalues);
+			if(rooms[playerroom] != undefined){
+				var gamevalues = '{"d1":"' + rooms[playerroom].dices[0] + '", "d2":"' + rooms[playerroom].dices[1] + '", "d3":"'+rooms[playerroom].dices[2]
+				+ '", "d4":"'+rooms[playerroom].dices[3] + '", "d5":"' + rooms[playerroom].dices[4] + '", "d6":"' + rooms[playerroom].dices[5] + '", "turn":"'
+				+ rooms[playerroom].turn + '", "bd1":"' + rooms[playerroom].dices[6] + '", "bd2":"' + rooms[playerroom].dices[7] + '", "score":"' + rooms[playerroom].score + '", 	"takebutton":"'
+				+ rooms[playerroom].showtakebutton + '", "rollallbutton":"' + rooms[playerroom].showrollallbutton + '", "room":"' + playerroom + '"}';
+				// Servers must return text in JSON format. eg. '{ "name":"John", "age":31, "city":"New York" }'
+				res.end(gamevalues);
+			}
 		}
 	}
 	else if(q.path == '/setup'){ // Setup the player to start playing.
@@ -78,11 +80,16 @@ http.createServer(function (req, res) {
 	}
 	else if(q.query.chatupdate != null){ // Give him the latest chat that he hasen't got. 
 		if(players[q.query.chatupdate] != null){
-			if(rooms[players[q.query.chatupdate].room].chats.length != 0 && rooms[players[q.query.chatupdate].room].chats[players[q.query.chatupdate].chat] != null){
-				players[q.query.chatupdate].chat += 1;
-				res.end(rooms[players[q.query.chatupdate].room].chats[players[q.query.chatupdate].chat-1]);
+			if(rooms[players[q.query.chatupdate].room] != undefined){
+				if(rooms[players[q.query.chatupdate].room].chats.length != 0 && rooms[players[q.query.chatupdate].room].chats[players[q.query.chatupdate].chat] != null){
+					players[q.query.chatupdate].chat += 1;
+					res.end(rooms[players[q.query.chatupdate].room].chats[players[q.query.chatupdate].chat-1]);
+				}
+				else{
+					res.end('');
+				}
 			}
-			else{
+			else {
 				res.end('');
 			}
 		}
@@ -177,16 +184,20 @@ http.createServer(function (req, res) {
         clearTimeout(players[q.query.ping].ping);
         if(allDicesDisabled(players[q.query.ping].room)){
             for(var i=0;i<6;i++){
-                rooms[players[q.query.ping].room].dices[i] = 0;
+				if(rooms[players[q.query.ping].room] != undefined){
+					rooms[players[q.query.ping].room].dices[i] = 0;
+				}
             }
         }
 		players[q.query.ping].ping = null;
 		players[q.query.ping].ping = setTimeout(function(){
-			rooms[players[q.query.ping].room].chats.push(players[q.query.ping].name + " left the game.");
-			delete players[q.query.ping];
-			console.log("Kicked player " + q.query.ping);
-			// console.log(players);
-			console.log("players.length: " + players.length);
+			if(rooms[players[q.query.ping].room] != undefined){
+				rooms[players[q.query.ping].room].chats.push(players[q.query.ping].name + " left the game.");
+				delete players[q.query.ping];
+				console.log("Kicked player " + q.query.ping);
+				// console.log(players);
+				console.log("players.length: " + players.length);
+			}
 		}, 10000);
 		var allplayers = '{';
 		for(var i = 0;i<players.length;i++){
@@ -203,6 +214,24 @@ http.createServer(function (req, res) {
 		}
 		allplayers += '}';
 		res.end(allplayers);
+	}
+	// else if(q.query.getplayers != null){ For the administrative page. WIP.
+	// 	console.log(players);
+	// 	res.end(JSON.stringify(players));
+	// }
+	else if(q.query.delroom != null) {
+		delete rooms[q.query.delroom];
+		res.end('Deleted Room');
+	}
+	else if(q.query.roompublic != null){
+		// Make room public
+		rooms[q.query.roompublic].privateroom = false;
+		res.end("Deleted Room");
+	}
+	else if(q.query.roomprivate != null){
+		// Make room private
+		rooms[q.query.roomprivate].privateroom = true;
+		res.end("Deleted Room");
 	}
 	else {
 		res.end("404");
@@ -234,7 +263,9 @@ http.createServer(function (req, res) {
 	}
 	for(var i=0;i<players.length;i++){  // Set the amount of players in each room and check to make sure they aren't over 10,000.
 		if(players[i] != undefined){
-			rooms[players[i].room].players += 1;
+			if(rooms[players[i].room] != undefined){
+				rooms[players[i].room].players += 1;
+			}
 		}
 		if(players[i] != undefined){
 			if(players[i].score > 10000){
@@ -672,9 +703,11 @@ function RollAll(theroom){
 function allDicesDisabled(theroom){
     var r = true;
     for(var i=0;i<6;i++){
-        if(rooms[theroom].dices[i] != -1){
-            return false;
-        }
+		if(rooms[theroom] != undefined){
+			if(rooms[theroom].dices[i] != -1){
+				return false;
+			}
+		}
     }
     return true;
 }
