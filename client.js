@@ -233,10 +233,46 @@ function createNewRoom() {
 
 function showjoinmenu(hideit) {
     showmodal(document.getElementById("joinroomtemplate").innerHTML);
+    roomtojoin = document.getElementById("roomtojoin");
+    roompassword = document.getElementById("roompassword"); // Added so that when you press enter it will join the room. 
+    roomtojoin.onkeypress = function (e) {
+        if (!e) e = window.event;
+        var keyCode = e.keyCode || e.which;
+        if (keyCode == '13') {
+            // Enter pressed
+            joinPrivateRoom();
+        }
+    }
+    roompassword.onkeypress = function (e) {
+        if (!e) e = window.event;
+        var keyCode = e.keyCode || e.which;
+        if (keyCode == '13') {
+            // Enter pressed
+            joinPrivateRoom();
+        }
+    }
 }
 
 function showcreateroommenu(hideit) {
     showmodal(document.getElementById("createroomtemplate").innerHTML);
+    newroomname = document.getElementById("newroomname");
+    newroompassword = document.getElementById("newroompassword");
+    newroomname.onkeypress = function (e) {
+        if (!e) e = window.event;
+        var keyCode = e.keyCode || e.which;
+        if (keyCode == '13') {
+            // Enter pressed
+            createNewRoom();
+        }
+    }
+    newroompassword.onkeypress = function (e) {
+        if (!e) e = window.event;
+        var keyCode = e.keyCode || e.which;
+        if (keyCode == '13') {
+            // Enter pressed
+            createNewRoom();
+        }
+    }
 }
 
 function showmodal(themessage) {
