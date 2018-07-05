@@ -5,21 +5,22 @@ Ten Thousand Online Game:
     ☐ Make it so you can login with a email and password. 
     ☐ Store all the players in an sql database (or in a firebase database whichever is easier).
 
-  ☐ Make it so when you press enter in the create room or join room menus that it will create the room or join the room. 
+  ✔ Make it so when you press enter in the create room or join room menus that it will create the room or join the room. @started(18-07-05 11:21) @done(18-07-05 11:31) @lasted(10m)
+  
+  ☐ Add a you broke message.
 
-  ☐ Maybe make a administrative page so I can move players from rooms, kick players, and reset rooms etc.
+  ☐ Make a administrative page so I can move players from rooms, kick players, and reset rooms etc.
     ✔ Add the following button for each room: Public/Private Game @done(18-06-30 10:42)
     ✘ Show players in the room dialog. @cancelled(18-07-01 16:43)
       Couldn't get the server to send the admin page the complete list of players due to this error: "TypeError: Converting circular structure to JSON"
     ✔ Delete Room @done(18-06-30 09:57)
     ✔ Reset room. @done(18-06-30 10:25)
 
-  ☐ Update UI: Change the numbers used for the dice into images and update UI.
+  ✔ Update UI: Change the numbers used for the dice into images and update UI. @done(18-07-05 11:18)
     ✔ Make the mobile friendly version. @done(18-07-03 09:38)
     ✔ Make the desktop friendly version. @started(18-07-04 08:33) @done(18-07-04 09:23) @lasted(50m35s)
     ✘ Learn CSS Grids and build a page or two. @cancelled(18-07-03 09:38)
     ✘ Feature: When you change your name it sets it as a cookie so it can save your name for next time you play so you don't have to type it in again @low @cancelled(18-07-04 09:34)
-    ☐ Add a you broke message.
     ✔ Move the public room buttons to the join room modal screen. Right now it takes up a lot of room on the main screen. @started(18-07-04 09:36) @done(18-07-04 09:44) @lasted(8m42s)
   
   Done:
