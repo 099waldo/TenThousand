@@ -7,12 +7,12 @@ Ten Thousand Online Game:
 
   ✔ Make it so when you press enter in the create room or join room menus that it will create the room or join the room. @started(18-07-05 11:21) @done(18-07-05 11:31) @lasted(10m)
   
-  ☐ Add a you broke message.
+  ✔ Add a you broke message. @done(18-07-05 19:12)
 
   ☐ Make a administrative page so I can move players from rooms, kick players, and reset rooms etc.
     ✔ Add the following button for each room: Public/Private Game @done(18-06-30 10:42)
-    ✘ Show players in the room dialog. @cancelled(18-07-01 16:43)
-      Couldn't get the server to send the admin page the complete list of players due to this error: "TypeError: Converting circular structure to JSON"
+    ☐ Show players in the room dialog.
+      Couldn't get the server to send the admin page the complete list of players due to this error: "TypeError: Converting circular structure to JSON" Maybe use the same system used in the q.query.ping part of the server.
     ✔ Delete Room @done(18-06-30 09:57)
     ✔ Reset room. @done(18-06-30 10:25)
 
