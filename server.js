@@ -160,7 +160,7 @@ http.createServer(function (req, res) {
 		}
 	}
 	else if(q.query.createroom != null)	{
-		console.log("Create room request.");
+			console.log("Create room request.");
 		for(var i=0;i<rooms.length+1;i++){
 			if(rooms[i] == undefined){
 				rooms[i] = JSON.parse(q.query.createroom);
@@ -172,9 +172,14 @@ http.createServer(function (req, res) {
 	else if(q.query.player != null){ // Then it is a attempt to play.
 		console.log("Play Request  " + requests);
 		if(q.query.player == rooms[players[q.query.player].room].turn){
-			play(q.query.player, q.query.button);
+			var br = play(q.query.player, q.query.button);
 		}
-		res.end("hello??");
+		if(br != null){
+			res.end(br.toString());
+		}
+		else{
+			res.end("hello??");
+		}
 	}
 	else if(q.query.ping != null){
         if(players[q.query.ping] == undefined){
@@ -195,7 +200,6 @@ http.createServer(function (req, res) {
 				rooms[players[q.query.ping].room].chats.push(players[q.query.ping].name + " left the game.");
 				delete players[q.query.ping];
 				console.log("Kicked player " + q.query.ping);
-				// console.log(players);
 				console.log("players.length: " + players.length);
 			}
 		}, 10000);
@@ -310,13 +314,15 @@ http.createServer(function (req, res) {
 function play(player, button){ // Line 30 shows all the button codes
 	if(button == -1){
         // Roll all dice.
-		RollAll(players[player].room);
+		var br = RollAll(players[player].room);
 		rooms[players[player].room].showrollallbutton = false;
+		return br;
 	}
 	if(button == 0 && rooms[players[player].room].allowroll){
         // Roll the available dice.
-		roll(players[player].room);
+		var br = roll(players[player].room);
 		rooms[players[player].room].showrollallbutton = false;
+		return br;
 	}
 	if(button == 1){
         // Take dice 1
@@ -693,6 +699,9 @@ function roll(theroom){
 		rooms[theroom].turn += 1;
 		rooms[theroom].showrollallbutton = false;
 		rooms[theroom].allowroll = true;
+		
+		// Send notification to the player that he broke. 
+		return true;
 	}
 	else{
 		rooms[theroom].allowroll = false;
@@ -703,8 +712,9 @@ function RollAll(theroom){
     rooms[theroom].score = 0;
     for(var i=0;i<6;i++){
         rooms[theroom].dices[i] = 0;
-    }
-    roll(theroom);
+	}
+	var br = roll(theroom);
+	return br;
 }
 
 function allDicesDisabled(theroom){

@@ -68,6 +68,8 @@ var modal = document.getElementById('myModal');
 var span = document.getElementsByClassName("close")[0];
 var modalmessage = document.getElementById("modalmessage");
 
+var body = document.getElementById("body");
+
 /*var add = setInterval(function() {
     // allow 1px inaccuracy by adding 1
     var isScrolledToBottom = chat.scrollHeight - chat.clientHeight <= chat.scrollTop + 1;
@@ -404,9 +406,11 @@ function update() {
         pingserver();
         if (playernum == turn && playernum != null && !turnNotIntervalGoing && turnNotIntervalEnabled) {
             turnNotInterval = setInterval(function () {
-                if (turnnotification.innerHTML != "YOUR TURN!!") {
-                    turnnotification.innerHTML = "YOUR TURN!!";
+                turnnotification.innerHTML = "Your Turn!";
+                if (turnnotification.hidden != false) {
+                    body.style.backgroundColor = "var(--sbackground)";
                     title.innerHTML = "YOUR TURN!!";
+                    // turnnotification.hidden = false;
                     //snd2.play();
                 }
                 else {
@@ -418,7 +422,8 @@ function update() {
         }
         else {
             clearInterval(turnNotInterval);
-            turnnotification.innerHTML = "";
+            turnnotification.hidden = true;
+            body.style.backgroundColor = "var(--background)";
             title.innerHTML = "Ten Thousand";
             turnNotIntervalGoing = false;
         }
@@ -433,7 +438,6 @@ function update() {
         xhr = httpRequest('GET', url + "/?update=" + playernum);
         xhr.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
-                infopar.innerHTML = xhr.responseText;
                 var results = JSON.parse(xhr.responseText);
                 dicesobj[0] = results.d1;
                 dicesobj[1] = results.d2;
@@ -483,11 +487,13 @@ function update() {
 */
 function RollAll() {
     var xhr = httpRequest('GET', url + '/?player=' + playernum + '&button=-1');
+    brokeNotification(xhr);
     turnNotIntervalEnabled = false;
     update();
 }
 function roll() {
     var xhr = httpRequest('GET', url + '/?player=' + playernum + '&button=0');
+    brokeNotification(xhr);
     turnNotIntervalEnabled = false;
     update();
 }
@@ -535,6 +541,19 @@ function takeit() {
     var xhr = httpRequest('GET', url + '/?player=' + playernum + '&button=9');
     turnNotIntervalEnabled = false;
     update();
+}
+
+function brokeNotification(hr) {
+    hr.onreadystatechange = function () {
+        if (hr.readyState == 4 && hr.status == 200) {
+            if(hr.responseText == "true"){
+                // Break
+                setTimeout(() => {
+                    body.style.backgroundColor = "var(--sbackground)";
+                }, 100);
+            }
+        }
+    }
 }
 
 function disableDices() { // Deciding weather or not to hide or disable the dice. 

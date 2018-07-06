@@ -10,6 +10,7 @@
         --yellow: #74b9ff;
         --dark: black;
         --background: #ffeaa7;
+        --sbackground: #fab1a0;
         --textcolor: var(--dark);
         --modalbackground: var(--background);
     }
@@ -58,7 +59,6 @@
         margin-right: auto;
         height: 175px;
         border: 2px solid var(--dark);
-        background-color: var(--background);
         color: var(--dark);
     }
     #chat {
@@ -110,6 +110,9 @@
         text-decoration: none;
         cursor: pointer;
     }
+    #secondaryBackground {
+        background-color: var(--sbackground);
+    }
     @media screen and (max-width: 550px) {
         body {
             font-size: 19px;
@@ -133,7 +136,7 @@
     }
 </style>
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
-<body>
+<body id="body">
     <h1 style="text-align: center;">Ten Thousand Online</h1>
     <div id="myModal" class="modal">
         <!-- Modal content -->
@@ -180,6 +183,7 @@
             <button onclick="bigDice2()" id="bigdice2">0</button>
         </div>
         <div class="group">
+            <p id="turnnotification"></p>
             <button onclick="takeit()" id="takeitbutton"  class="rollbutton">Take It</button>
         </div>
         <div class="group">
@@ -187,7 +191,6 @@
         </div>
         <div class="group">
             <p id ="infopar"></p>
-            <p id="turnnotification" style="color: red"></p>
             <p id="scorepar"></p>
         </div>
         <div class="group">
@@ -197,6 +200,8 @@
             <input type="text" id="chatbox" placeholder="Chat here:"><button id="chatsubmit" onclick="sendChat()" class="chatbutton">Send</button>
         </div>
     </div>
+        <!-- Secondary Background Color div -->
+        <div id="secondaryBackground"></div> 
     <script src="client.js"></script>
 
     <script id="joinroomtemplate" type="x-tmpl-mustache">
