@@ -557,6 +557,9 @@ function brokeNotification(hr) {
                 // Break
                 setTimeout(() => {
                     body.style.backgroundColor = "var(--sbackground)";
+                    setTimeout(() => {
+                        body.style.backgroundColor = "var(--sbackground)";
+                    }, 1000);
                 }, 100);
             }
         }
