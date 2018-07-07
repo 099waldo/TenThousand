@@ -583,25 +583,25 @@ function disableDices() { // Deciding weather or not to hide or disable the dice
         else {
             dices[i].hidden = false;
         }
-        if(dicesobj[i] == 1){
+        if(dicesobj[i] == 1 && dices[i].innerHTML != '<img src="dice1.png">'){
             dices[i].innerHTML = '<img src="dice1.png">';
         }
-        if(dicesobj[i] == 2){
+        if(dicesobj[i] == 2 && dices[i].innerHTML != '<img src="dice2.png">'){
             dices[i].innerHTML = '<img src="dice2.png">';
         }
-        if(dicesobj[i] == 3){
+        if(dicesobj[i] == 3 && dices[i].innerHTML != '<img src="dice3.png">'){
             dices[i].innerHTML = '<img src="dice3.png">';
         }
-        if(dicesobj[i] == 4){
+        if(dicesobj[i] == 4 && dices[i].innerHTML != '<img src="dice4.png">'){
             dices[i].innerHTML = '<img src="dice4.png">';
         }
-        if(dicesobj[i] == 5){
+        if(dicesobj[i] == 5 && dices[i].innerHTML != '<img src="dice5.png">'){
             dices[i].innerHTML = '<img src="dice5.png">';
         }
-        if(dicesobj[i] == 6){
+        if(dicesobj[i] == 6 && dices[i].innerHTML != '<img src="dice6.png">'){
             dices[i].innerHTML = '<img src="dice6.png">';
         }
-        if(dicesobj[i] == 0){
+        if(dicesobj[i] == 0 && dices[i].innerHTML != '<img src="dice0.png">'){
             dices[i].innerHTML = '<img src="dice0.png">';
         }
     }
