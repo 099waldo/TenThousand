@@ -5,9 +5,17 @@ Ten Thousand Online Game:
     ☐ Make it so you can login with a email and password. 
     ☐ Store all the players in an sql database (or in a firebase database whichever is easier).
 
+  ☐ BUG: If there is two players in the game room and are seperated by an empty player, the second player won't be shown on the player list. 
+
   ✔ Make it so when you press enter in the create room or join room menus that it will create the room or join the room. @started(18-07-05 11:21) @done(18-07-05 11:31) @lasted(10m)
   
   ✔ Add a you broke message. @done(18-07-05 19:12)
+
+  ✔ Maybe change the broke blink to two blinks. @done(18-07-06 19:40)
+
+  ✔ Add a modal pop up if you are pressing the roll button when it isn't your turn. @done(18-07-06 19:30)
+
+  ✔ Make it so the dice buttons don't rewrite themselves when they don't need to. @done(18-07-06 19:44)
 
   ☐ Make a administrative page so I can move players from rooms, kick players, and reset rooms etc.
     ✔ Add the following button for each room: Public/Private Game @done(18-06-30 10:42)
