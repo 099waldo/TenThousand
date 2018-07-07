@@ -492,9 +492,16 @@ function RollAll() {
     update();
 }
 function roll() {
-    var xhr = httpRequest('GET', url + '/?player=' + playernum + '&button=0');
-    brokeNotification(xhr);
-    turnNotIntervalEnabled = false;
+    if(playernum != null){
+        if(turn != playernum){
+            showmodal("It's not your turn!");
+        }
+        else{
+            var xhr = httpRequest('GET', url + '/?player=' + playernum + '&button=0');
+            brokeNotification(xhr);
+            turnNotIntervalEnabled = false;
+        }
+    }
     update();
 }
 function dice1() {
