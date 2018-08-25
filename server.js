@@ -26,8 +26,8 @@ console.log("Server Started.");
 
 
 http.createServer(function (req, res) {
-	//res.setHeader('Access-Control-Allow-Origin', 'http://waldoweb.net'); // Don't delete this line.
-	res.setHeader('Access-Control-Allow-Origin', null); // For local testing.
+	res.setHeader('Access-Control-Allow-Origin', 'http://waldoweb.net'); // Don't delete this line.
+	//res.setHeader('Access-Control-Allow-Origin', 'http://127.0.0.1:5500'); // For local testing. or null
 	res.writeHead(200, { 'Content-Type': 'text/html' });
 	requests += 1;
 

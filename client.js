@@ -17,7 +17,7 @@ dices.push(document.getElementById("dice4"));
 dices.push(document.getElementById("dice5"));
 dices.push(document.getElementById("dice6"));
 
-var dicesobj = [0,0,0,0,0,0];
+var dicesobj = [0, 0, 0, 0, 0, 0];
 
 var bigdice1 = document.getElementById("bigdice1");
 var bigdice2 = document.getElementById("bigdice2");
@@ -147,12 +147,12 @@ function updateRooms() {
                 }
             }
             roomdiv = document.getElementById("gameroomdiv");
-            if(roomdiv != null){
+            if (roomdiv != null) {
                 roomdiv.innerHTML = texttosend;
             }
             if (rooms != undefined && roomnum != null) {
                 restartbutton.hidden = !rooms[roomnum].showrestart; // Show/Hide the restart game button. 
-                if(rooms[roomnum] == undefined){
+                if (rooms[roomnum] == undefined) {
                     roomnum = 0;
                 }
             }
@@ -180,7 +180,7 @@ function joinPrivateRoom() {
     roompassword = document.getElementById("roompassword");
     var theroom = 0;
     for (var i = 0; i < rooms.length; i++) {
-        if(rooms[i] != null){
+        if (rooms[i] != null) {
             if (rooms[i].name == roomtojoin.value) {
                 theroom = i;
                 break;
@@ -332,13 +332,14 @@ function pingserver() {
             //console.log(pings + " " + xhr.responseText);
             var results = JSON.parse(xhr.responseText);
             scorepar.innerHTML = '<br>';
-            writeScore(results.p0, 0);  // Figure out a way to change this to a for loop later. 
+            writeScore(results.p0, 0);  // Figure out a way to change this to a for loop later. Canceled. 
             writeScore(results.p1, 1);
             writeScore(results.p2, 2);
             writeScore(results.p3, 3);
             writeScore(results.p4, 4);
             writeScore(results.p5, 5);
             writeScore(results.p6, 6);
+            writeScore(results.p7, 7); // 8 Players allowed in each game room. 
             disableDices();
         }
     }
@@ -492,11 +493,11 @@ function RollAll() {
     update();
 }
 function roll() {
-    if(playernum != null){
-        if(turn != playernum){
+    if (playernum != null) {
+        if (turn != playernum) {
             showmodal("It's not your turn!");
         }
-        else{
+        else {
             var xhr = httpRequest('GET', url + '/?player=' + playernum + '&button=0');
             brokeNotification(xhr);
             turnNotIntervalEnabled = false;
@@ -553,7 +554,7 @@ function takeit() {
 function brokeNotification(hr) {
     hr.onreadystatechange = function () {
         if (hr.readyState == 4 && hr.status == 200) {
-            if(hr.responseText == "true"){
+            if (hr.responseText == "true") {
                 // Break
                 setTimeout(() => {
                     body.style.backgroundColor = "var(--sbackground)";
@@ -583,25 +584,25 @@ function disableDices() { // Deciding weather or not to hide or disable the dice
         else {
             dices[i].hidden = false;
         }
-        if(dicesobj[i] == 1 && dices[i].innerHTML != '<img src="dice1.png">'){
+        if (dicesobj[i] == 1 && dices[i].innerHTML != '<img src="dice1.png">') {
             dices[i].innerHTML = '<img src="dice1.png">';
         }
-        if(dicesobj[i] == 2 && dices[i].innerHTML != '<img src="dice2.png">'){
+        if (dicesobj[i] == 2 && dices[i].innerHTML != '<img src="dice2.png">') {
             dices[i].innerHTML = '<img src="dice2.png">';
         }
-        if(dicesobj[i] == 3 && dices[i].innerHTML != '<img src="dice3.png">'){
+        if (dicesobj[i] == 3 && dices[i].innerHTML != '<img src="dice3.png">') {
             dices[i].innerHTML = '<img src="dice3.png">';
         }
-        if(dicesobj[i] == 4 && dices[i].innerHTML != '<img src="dice4.png">'){
+        if (dicesobj[i] == 4 && dices[i].innerHTML != '<img src="dice4.png">') {
             dices[i].innerHTML = '<img src="dice4.png">';
         }
-        if(dicesobj[i] == 5 && dices[i].innerHTML != '<img src="dice5.png">'){
+        if (dicesobj[i] == 5 && dices[i].innerHTML != '<img src="dice5.png">') {
             dices[i].innerHTML = '<img src="dice5.png">';
         }
-        if(dicesobj[i] == 6 && dices[i].innerHTML != '<img src="dice6.png">'){
+        if (dicesobj[i] == 6 && dices[i].innerHTML != '<img src="dice6.png">') {
             dices[i].innerHTML = '<img src="dice6.png">';
         }
-        if(dicesobj[i] == 0 && dices[i].innerHTML != '<img src="dice0.png">'){
+        if (dicesobj[i] == 0 && dices[i].innerHTML != '<img src="dice0.png">') {
             dices[i].innerHTML = '<img src="dice0.png">';
         }
     }
