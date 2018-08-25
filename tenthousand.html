@@ -41,18 +41,22 @@
         color: var(--dark);
         border-radius: 4px;
     }
+
     button:active {
         background: rgba(0, 0, 0, 0.445);
     }
+
     button:disabled {
         opacity: 0.6;
         cursor: not-allowed;
     }
+
     .dice {
         border: none;
         background-color: rgba(0, 0, 0, 0);
         background-size: cover;
     }
+
     .chatdiv {
         max-width: 600px;
         margin-left: auto;
@@ -61,31 +65,46 @@
         border: 2px solid var(--dark);
         color: var(--dark);
     }
+
     #chat {
         overflow: auto;
     }
-    input[type="text"], input[type="password"] {
+
+    input[type="text"],
+    input[type="password"] {
         min-height: 25px;
         min-width: 48px;
         width: 175px;
     }
+
     input:hover {
         opacity: 50%;
     }
+
     /* The Modal (background) */
     .modal {
-        display: none; /* Hidden by default */
-        position: fixed; /* Stay in place */
-        z-index: 1; /* Sit on top */
-        padding-top: 100px; /* Location of the box */
+        display: none;
+        /* Hidden by default */
+        position: fixed;
+        /* Stay in place */
+        z-index: 1;
+        /* Sit on top */
+        padding-top: 100px;
+        /* Location of the box */
         left: 0;
         top: 0;
-        width: 100%; /* Full width */
-        height: 100%; /* Full height */
-        overflow: auto; /* Enable scroll if needed */
-        background-color: rgb(0,0,0); /* Fallback color */
-        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        width: 100%;
+        /* Full width */
+        height: 100%;
+        /* Full height */
+        overflow: auto;
+        /* Enable scroll if needed */
+        background-color: rgb(0, 0, 0);
+        /* Fallback color */
+        background-color: rgba(0, 0, 0, 0.4);
+        /* Black w/ opacity */
     }
+
     /* Modal Content */
     .modal-content {
         background-color: var(--modalbackground);
@@ -110,9 +129,11 @@
         text-decoration: none;
         cursor: pointer;
     }
+
     #secondaryBackground {
         background-color: var(--sbackground);
     }
+
     @media screen and (max-width: 550px) {
         body {
             font-size: 19px;
@@ -123,7 +144,8 @@
             min-width: 48px;
             min-height: 48px;
         }
-        input[type="text"], input[type="password"] {
+        input[type="text"],
+        input[type="password"] {
             min-width: 48px;
             min-height: 39px;
             font-size: 20px;
@@ -136,6 +158,7 @@
     }
 </style>
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+
 <body id="body">
     <h1 style="text-align: center;">Ten Thousand Online</h1>
     <div id="myModal" class="modal">
@@ -184,13 +207,13 @@
         </div>
         <div class="group">
             <p id="turnnotification"></p>
-            <button onclick="takeit()" id="takeitbutton"  class="rollbutton">Take It</button>
+            <button onclick="takeit()" id="takeitbutton" class="rollbutton">Take It</button>
         </div>
         <div class="group">
             <button onclick="restart()" id="restartbutton" class="restartbutton">Restart Game</button>
         </div>
         <div class="group">
-            <p id ="infopar"></p>
+            <p id="infopar"></p>
             <p id="scorepar"></p>
         </div>
         <div class="group">
@@ -200,8 +223,8 @@
             <input type="text" id="chatbox" placeholder="Chat here:"><button id="chatsubmit" onclick="sendChat()" class="chatbutton">Send</button>
         </div>
     </div>
-        <!-- Secondary Background Color div -->
-        <div id="secondaryBackground"></div> 
+    <!-- Secondary Background Color div -->
+    <div id="secondaryBackground"></div>
     <script src="client.js"></script>
 
     <script id="joinroomtemplate" type="x-tmpl-mustache">
@@ -226,4 +249,5 @@
         </div>
     </script>
 </body>
+
 </html>
