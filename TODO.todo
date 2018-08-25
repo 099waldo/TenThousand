@@ -6,9 +6,9 @@ Ten Thousand Online Game:
     ☐ Store all the players in an sql database (or in a firebase database whichever is easier).
 
   ☐ BUG: Only some players will show on the list. To fix limit the maximum amount of players in a room. @critical 
-    We can't limit the amount of players in the first room though. 
+    We can't limit the amount of players in the first room so we need to only limit the amount of players in all of the other rooms. 
 
-  ☐ Make it so the client will stop trying to connect after it gets the error that it can't connect to the server. (also display a message to the user)
+  ☐ Make it so the client will stop trying to connect after it gets the error that it can't connect to the server. (also display a message to the user) @critical 
 
   ☐ Make a administrative page so I can move players from rooms, kick players, and reset rooms etc.
     ✔ Add the following button for each room: Public/Private Game @done(18-06-30 10:42)
