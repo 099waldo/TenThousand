@@ -1,28 +1,30 @@
 <html>
-    <head>
-        <title id="title">Ten Thousand</title>
-        <link rel="stylesheet" type="text/css"href="tenthousand.css">
-        <meta name="viewport" content="width=device-width">
-    </head>
-    <body style="text-align: center;">
-        <h1>Ten Thousand Online</h1>
 
-        <!-- Here is all the various windows that can pop up.  -->
+<head>
+    <title id="title">Ten Thousand</title>
+    <link rel="stylesheet" type="text/css" href="tenthousand.css">
+    <meta name="viewport" content="width=device-width">
+</head>
 
-        <div id="myModal" class="modal">
-            <!-- Modal content -->
-            <div class="modal-content">
-                <span class="close" onclick="closemodal()">&times;</span>
-                <p id="modalmessage">Some text in the Modal..</p>
-            </div>
+<body style="text-align: center;">
+    <h1>Ten Thousand Online</h1>
+
+    <!-- Here is all the various windows that can pop up.  -->
+
+    <div id="myModal" class="modal">
+        <!-- Modal content -->
+        <div class="modal-content">
+            <span class="close" onclick="closemodal()">&times;</span>
+            <p id="modalmessage">Some text in the Modal..</p>
         </div>
+    </div>
 
-        <div id="startgamebutton">
-            <p>Coded from scratch by Waldo.</p>
-            <button class="rollbutton" onclick="startgame()">PLAY!</button>
-        </div>
+    <div id="startgamebutton">
+        <p>Coded from scratch by Waldo.</p>
+        <button class="rollbutton" onclick="startgame()">PLAY!</button>
+    </div>
 
-        <script id="joinroomtemplate" type="x-tmpl-mustache">
+    <script id="joinroomtemplate" type="x-tmpl-mustache">
             <div id="joinprivateroom">
                 <h2>Join Private Game Room</h2>
                 Room Name: <input type="text" id="roomtojoin"/><br>
@@ -31,7 +33,7 @@
             </div>
         </script>
 
-        <script id="createroomtemplate" type="x-tmpl-mustache">
+    <script id="createroomtemplate" type="x-tmpl-mustache">
             <div id="createroom">
                 <h2>Create Game Room</h2>
                 Private Game <input type="checkbox" id="privategamecheckbox"/><br><br>
@@ -41,38 +43,40 @@
             </div>
         </script>
 
-        <br><br>
+    <br><br>
 
-        <!-- The actual game window -->
-        <div id="gamediv" hidden="true">
-            <button onclick="showjoinmenu(false)">Join Private Room</button>  <button onclick="showcreateroommenu(false)">Create New Room</button><br><br>
-            Your name: <input id="name" type="text" style="text-align: center;" onchange="changeName()"/><br><br>
-            <h2 id="roomname"></h2>
-            <div id="gameroomdiv">
-            </div><br>
-            <button onclick="RollAll()" id="rollallbutton" class="rollbutton">Roll All the Dice</button>
-            <button onclick="roll()" id="rollbutton" class="rollbutton">Roll The Dice</button><br><br>
-            <button onclick="dice1()" id = "dice1" class="dice">0</button>
-            <button onclick="dice2()" id = "dice2" class="dice">0</button>
-            <button onclick="dice3()" id = "dice3" class="dice">0</button>
-            <button onclick="dice4()" id = "dice4" class="dice">0</button>
-            <button onclick="dice5()" id = "dice5" class="dice">0</button>
-            <button onclick="dice6()" id = "dice6" class="dice">0</button><br>
-            <button onclick="bigDice1()" id="bigdice1" class="dice">0</button>
-            <button onclick="bigDice2()" id="bigdice2" class="dice">0</button><br><br>
-            <button onclick="takeit()" id="takeitbutton"  class="rollbutton">Take it</button><br><br>
-            <button onclick="restart()" id="restartbutton" class="restartbutton">Restart Game</button>
-            <p id ="infopar"></p>
-            <p id="turnnotification" style="color: red"></p>
-            <p id="scorepar"></p>
-            Chat:
-            <div id="chat">
-                
-            </div><br>
-            <input id="chatbox" placeholder="Chat here:"/><button id="chatsubmit" onclick="sendChat()" class="chatbutton">Send</button><br><br>
-        </div>
-        
-        <input type="checkbox" name="localserver" value="local" id="localbutton">Local Server
-        <script src="client.js"></script>
-    </body>
+    <!-- The actual game window -->
+    <div id="gamediv" hidden="true">
+        <button onclick="showjoinmenu(false)">Join Private Room</button> <button onclick="showcreateroommenu(false)">Create
+            New Room</button><br><br> Your name: <input id="name" type="text" style="text-align: center;" onchange="changeName()"
+        /><br><br>
+        <h2 id="roomname"></h2>
+        <div id="gameroomdiv">
+        </div><br>
+        <button onclick="RollAll()" id="rollallbutton" class="rollbutton">Roll All the Dice</button>
+        <button onclick="roll()" id="rollbutton" class="rollbutton">Roll The Dice</button><br><br>
+        <button onclick="dice1()" id="dice1" class="dice">0</button>
+        <button onclick="dice2()" id="dice2" class="dice">0</button>
+        <button onclick="dice3()" id="dice3" class="dice">0</button>
+        <button onclick="dice4()" id="dice4" class="dice">0</button>
+        <button onclick="dice5()" id="dice5" class="dice">0</button>
+        <button onclick="dice6()" id="dice6" class="dice">0</button><br>
+        <button onclick="bigDice1()" id="bigdice1" class="dice">0</button>
+        <button onclick="bigDice2()" id="bigdice2" class="dice">0</button><br><br>
+        <button onclick="takeit()" id="takeitbutton" class="rollbutton">Take it</button><br><br>
+        <button onclick="restart()" id="restartbutton" class="restartbutton">Restart Game</button>
+        <p id="infopar"></p>
+        <p id="turnnotification" style="color: red"></p>
+        <p id="scorepar"></p>
+        Chat:
+        <div id="chat">
+
+        </div><br>
+        <input id="chatbox" placeholder="Chat here:" /><button id="chatsubmit" onclick="sendChat()" class="chatbutton">Send</button><br><br>
+    </div>
+
+    <input type="checkbox" name="localserver" value="local" id="localbutton">Local Server
+    <script src="client.js"></script>
+</body>
+
 </html>

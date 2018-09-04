@@ -17,7 +17,7 @@ dices.push(document.getElementById("dice4"));
 dices.push(document.getElementById("dice5"));
 dices.push(document.getElementById("dice6"));
 
-var dicesobj = [0,0,0,0,0,0];
+var dicesobj = [0, 0, 0, 0, 0, 0];
 
 var bigdice1 = document.getElementById("bigdice1");
 var bigdice2 = document.getElementById("bigdice2");
@@ -147,7 +147,7 @@ function updateRooms() {
             roomdiv.innerHTML = texttosend;
             if (rooms != undefined && roomnum != null) {
                 restartbutton.hidden = !rooms[roomnum].showrestart; // Show/Hide the restart game button. 
-                if(rooms[roomnum] == undefined){
+                if (rooms[roomnum] == undefined) {
                     roomnum = 0;
                 }
             }
@@ -175,7 +175,7 @@ function joinPrivateRoom() {
     roompassword = document.getElementById("roompassword");
     var theroom = 0;
     for (var i = 0; i < rooms.length; i++) {
-        if(rooms[i] != null){
+        if (rooms[i] != null) {
             if (rooms[i].name == roomtojoin.value) {
                 theroom = i;
                 break;
@@ -515,25 +515,25 @@ function disableDices() { // Deciding weather or not to hide or disable the dice
         else {
             dices[i].hidden = false;
         }
-        if(dicesobj[i] == 1){
+        if (dicesobj[i] == 1) {
             dices[i].innerHTML = '<img src="dice1.png">';
         }
-        if(dicesobj[i] == 2){
+        if (dicesobj[i] == 2) {
             dices[i].innerHTML = '<img src="dice2.png">';
         }
-        if(dicesobj[i] == 3){
+        if (dicesobj[i] == 3) {
             dices[i].innerHTML = '<img src="dice3.png">';
         }
-        if(dicesobj[i] == 4){
+        if (dicesobj[i] == 4) {
             dices[i].innerHTML = '<img src="dice4.png">';
         }
-        if(dicesobj[i] == 5){
+        if (dicesobj[i] == 5) {
             dices[i].innerHTML = '<img src="dice5.png">';
         }
-        if(dicesobj[i] == 6){
+        if (dicesobj[i] == 6) {
             dices[i].innerHTML = '<img src="dice6.png">';
         }
-        if(dicesobj[i] == 0){
+        if (dicesobj[i] == 0) {
             dices[i].innerHTML = '<img src="dice0.png">';
         }
     }
