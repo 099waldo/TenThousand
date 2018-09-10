@@ -1,9 +1,10 @@
 Ten Thousand Online Game:
 
   ☐ Make it so you have to login with an account to play the game. 
-    ☐ Setup firebase to handle the logins. https://firebase.google.com/docs/samples/ Check under Authentication. https://github.com/firebase/quickstart-js/blob/master/auth/email-password.html.
-    ☐ Make it so you can login with a email and password. 
-    ☐ Store all the players in an sql database (or in a firebase database whichever is easier).
+    ✘ Setup firebase to handle the logins. https://firebase.google.com/docs/samples/ Check under Authentication. https://github.com/firebase/quickstart-js/blob/master/auth/email-password.html. @cancelled(18-09-10 08:03)
+    ✘ Make it so you can login with a email and password. @cancelled(18-09-10 08:03)
+    ✘ Store all the players in an sql database (or in a firebase database whichever is easier). @cancelled(18-09-10 08:03)
+    ☐ Use the google login system to handle logins and player information. 
 
   ☐ Make it so when you press enter in the create room or join room menus that it will create the room or join the room. 
 
